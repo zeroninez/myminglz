@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import { Toaster } from 'react-hot-toast'
+import { NavBar } from './NavBar'
 
 export const Layout = ({ children }) => {
   const ref = useRef(null)
-
 
   return (
     <>
@@ -20,6 +20,7 @@ export const Layout = ({ children }) => {
       >
         {children}
         <Toaster />
+        <NavBar />
       </div>
     </>
   )

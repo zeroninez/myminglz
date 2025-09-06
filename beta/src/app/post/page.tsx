@@ -7,5 +7,5 @@ import { useRouter } from 'next/navigation'
 export default function Page() {
   const router = useRouter()
 
-  return <Screen className={classNames(`bg-white`)}>main</Screen>
+  return <Screen className={classNames(`bg-white`)}>post</Screen>
 }
