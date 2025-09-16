@@ -6,12 +6,18 @@ import map from '@/svgs/icons/map.svg'
 import feed from '@/svgs/icons/feed.svg'
 import add from '@/svgs/icons/add.svg'
 import profile from '@/svgs/icons/profile.svg'
+import star from '@/svgs/icons/star.svg'
+import down from '@/svgs/icons/down.svg'
+import plus from '@/svgs/icons/plus.svg'
 
 export const icons = {
   map,
   feed,
   add,
   profile,
+  star,
+  down,
+  plus,
 }
 
 interface IconProps {

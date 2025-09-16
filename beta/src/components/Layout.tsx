@@ -3,13 +3,18 @@
 import { useEffect, useRef } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { NavBar } from './NavBar'
+import { motion } from 'framer-motion'
 
 export const Layout = ({ children }) => {
   const ref = useRef(null)
 
   return (
     <>
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
         ref={ref}
         style={{
           position: 'relative',
@@ -21,7 +26,7 @@ export const Layout = ({ children }) => {
         {children}
         <Toaster />
         <NavBar />
-      </div>
+      </motion.div>
     </>
   )
 }

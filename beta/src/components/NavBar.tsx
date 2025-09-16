@@ -27,7 +27,7 @@ export const NavBar = () => {
         'fixed bottom-0 z-40',
         'inset-x-0 h-fit',
         'flex flex-row justify-center items-center',
-        'bg-black rounded-t-xl',
+        'bg-navbar rounded-t-xl',
       )}
     >
       {navItems.map((item) => (
