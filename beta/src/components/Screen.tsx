@@ -1,6 +1,9 @@
+'use client'
+
 import classNames from 'classnames'
 import { Header } from '.'
 import { HeaderProps } from '.'
+import { motion } from 'framer-motion'
 
 /**
  * Screen
@@ -35,7 +38,7 @@ export const Screen = ({ header, nav, isFixed, children, className, ...rest }: S
   const baseScreenClasses = 'w-full  h-screen relative flex flex-col justify-start items-center '
 
   return (
-    <div
+    <motion.div
       className={classNames(
         baseScreenClasses,
         header ? `pt-safe-offset-10` : ``,
@@ -47,6 +50,6 @@ export const Screen = ({ header, nav, isFixed, children, className, ...rest }: S
     >
       {header && <Header title={header.title} left={header.left} right={header.right} />}
       {children}
-    </div>
+    </motion.div>
   )
 }
