@@ -3,6 +3,7 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import { Icon } from './Icon'
 import { useRouter, usePathname } from 'next/navigation'
+import { NavBarHeight } from '@/constants/sizeguide'
 
 export const NavBar = () => {
   const router = useRouter()
@@ -24,10 +25,9 @@ export const NavBar = () => {
     <div
       className={classNames(
         // NavBar container
-        'fixed bottom-0 z-40',
-        'inset-x-0 h-fit',
-        'flex flex-row justify-center items-center',
-        'bg-navbar rounded-t-xl',
+        `fixed bottom-0 z-40 inset-x-0 h-[${NavBarHeight}px]`,
+        `flex flex-row justify-center items-center`,
+        `bg-navbar rounded-t-xl`,
       )}
     >
       {navItems.map((item) => (
@@ -36,8 +36,8 @@ export const NavBar = () => {
           className={classNames(
             // NavBar item
             'flex flex-col justify-center items-center',
-            current === item.label && pathname === item.link ? 'text-white' : 'text-dim-text',
-            'flex-1 pt-4 pb-6',
+            current === item.label || pathname === item.link ? 'text-white' : 'text-dim-text',
+            'flex-1 pt-4 pb-4',
           )}
           onClick={() => handleNavClick(item.label, item.link)}
         >

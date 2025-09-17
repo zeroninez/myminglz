@@ -32,7 +32,7 @@ export interface ScreenProps {
 }
 
 export const Screen = ({ header, nav, isFixed, children, className, ...rest }: ScreenProps) => {
-  const baseScreenClasses = 'w-full  h-screen relative flex flex-col justify-start items-center '
+  const baseScreenClasses = 'w-full h-dvh'
 
   return (
     <div

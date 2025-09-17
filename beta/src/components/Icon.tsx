@@ -9,6 +9,11 @@ import profile from '@/svgs/icons/profile.svg'
 import star from '@/svgs/icons/star.svg'
 import down from '@/svgs/icons/down.svg'
 import plus from '@/svgs/icons/plus.svg'
+import alias from '@/svgs/icons/alias.svg'
+import category from '@/svgs/icons/category.svg'
+import folder from '@/svgs/icons/folder.svg'
+import user from '@/svgs/icons/user.svg'
+import bookmark from '@/svgs/icons/bookmark.svg'
 
 export const icons = {
   map,
@@ -18,6 +23,11 @@ export const icons = {
   star,
   down,
   plus,
+  alias,
+  category,
+  folder,
+  user,
+  bookmark,
 }
 
 interface IconProps {
