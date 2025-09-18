@@ -6,6 +6,7 @@ import { pretendard } from '@/src/theme/fonts'
 import { Metadata, Viewport } from 'next'
 import { APP_INFO } from '@/constants/metadata'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
+import GoogleMapsProvider from './providers/GoogleMapsProvider'
 
 export const metadata: Metadata = {
   title: {
@@ -89,7 +90,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <body className={`${pretendard}`}>
-        <Layout>{children}</Layout>
+        <GoogleMapsProvider>
+          <Layout>{children}</Layout>
+        </GoogleMapsProvider>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
       </body>

@@ -1,32 +1,63 @@
 'use client'
 
-import { GoogleMap, LoadScript } from '@react-google-maps/api'
+import { GoogleMap } from '@react-google-maps/api'
+import { useMemo, useCallback, useRef, memo } from 'react'
 import { NavBarHeight } from '@/constants/sizeguide'
+import { useGoogleMaps } from '@/app/providers/GoogleMapsProvider'
 
 interface MapProps {
-  style?: React.CSSProperties
-  defaultCenter?: { lat: number; lng: number }
+  defaultCenter?: { lat: number; lng: number } | null
   defaultZoom?: number
-  gestureHandling?: 'greedy' | 'cooperative' | 'none' | 'auto'
-  disableDefaultUI?: boolean
   children?: React.ReactNode
 }
 
-export const Map = (props: MapProps) => {
-  return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
-      <GoogleMap
-        mapContainerStyle={{
+function MapBase({ defaultCenter, defaultZoom = 10, children }: MapProps) {
+  const { isLoaded } = useGoogleMaps()
+  const mapRef = useRef<google.maps.Map>()
+
+  const center = useMemo(() => defaultCenter ?? ({ lat: 37.5665, lng: 126.978 } as const), [defaultCenter])
+
+  const onMapLoad = useCallback((m: google.maps.Map) => {
+    mapRef.current = m
+  }, [])
+
+  if (!isLoaded) {
+    // 여기에 스피너/플레이스홀더 원하는대로
+    return (
+      <div
+        style={{
           width: '100%',
-          height: `calc(100dvh - ${NavBarHeight - 32}px)`,
+          height: `calc(100dvh - ${NavBarHeight - 24}px)`,
+          display: 'grid',
+          placeItems: 'center',
         }}
-        //seoul lat lng
-        center={props.defaultCenter || { lat: 37.5665, lng: 126.978 }}
-        zoom={props.defaultZoom || 10}
       >
-        {/* Your map components go here */}
-        {props.children}
-      </GoogleMap>
-    </LoadScript>
+        로딩중...
+      </div>
+    )
+  }
+
+  return (
+    <GoogleMap
+      onLoad={onMapLoad}
+      mapContainerStyle={{ width: '100%', height: '80dvh' }}
+      center={center}
+      zoom={defaultZoom}
+      options={{
+        gestureHandling: 'greedy',
+        disableDefaultUI: true,
+        streetViewControl: false,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        zoomControl: true,
+        clickableIcons: false,
+        keyboardShortcuts: false,
+        scaleControl: false,
+      }}
+    >
+      {children}
+    </GoogleMap>
   )
 }
+
+export const Map = memo(MapBase)
