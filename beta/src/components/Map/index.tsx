@@ -40,7 +40,7 @@ function MapBase({ defaultCenter, defaultZoom = 10, children }: MapProps) {
   return (
     <GoogleMap
       onLoad={onMapLoad}
-      mapContainerStyle={{ width: '100%', height: '80dvh' }}
+      mapContainerStyle={{ width: '100%', height: '100dvh' }}
       center={center}
       zoom={defaultZoom}
       options={{
@@ -49,7 +49,7 @@ function MapBase({ defaultCenter, defaultZoom = 10, children }: MapProps) {
         streetViewControl: false,
         mapTypeControl: false,
         fullscreenControl: false,
-        zoomControl: true,
+        zoomControl: false,
         clickableIcons: false,
         keyboardShortcuts: false,
         scaleControl: false,

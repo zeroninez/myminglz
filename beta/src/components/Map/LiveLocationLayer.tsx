@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CircleF, MarkerF, useGoogleMap } from '@react-google-maps/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
+import { NavBarHeight } from '@/constants/sizeguide'
 
 type Tracking = false | 'observe' | 'follow'
 
@@ -54,18 +55,16 @@ export default function LiveLocationLayer() {
   return (
     <>
       {/* 권한/에러 안내: 필요 시 UI로 치장 */}
-      {!loc && (permission === 'prompt' || permission === 'unknown') && (
-        <div className='absolute left-3 bottom-3 z-[1] rounded-md bg-black px-3 py-2 text-sm shadow'>
-          위치 권한을 허용해 주세요.
+      {((!loc && (permission === 'prompt' || permission === 'unknown')) || permission === 'denied' || error) && (
+        <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] rounded-md bg-black/50 backdrop-blur-md px-3 py-2 w-[80vw] text-sm shadow'>
+          {!loc && (permission === 'prompt' || permission === 'unknown') && (
+            <div className=''>위치 권한을 허용해 주세요.</div>
+          )}
+          {permission === 'denied' && (
+            <div className=''>위치 접근이 거부되었습니다. 브라우저 설정에서 허용해 주세요.</div>
+          )}
+          {error && <div className=''>{error}</div>}
         </div>
-      )}
-      {permission === 'denied' && (
-        <div className='absolute left-3 bottom-3 z-[1] rounded-md bg-black px-3 py-2 text-sm shadow'>
-          위치 접근이 거부되었습니다. 브라우저 설정에서 허용해 주세요.
-        </div>
-      )}
-      {error && (
-        <div className='absolute left-3 bottom-3 z-[1] rounded-md bg-black px-3 py-2 text-sm shadow'>{error}</div>
       )}
 
       {/* 현재 위치 & 정확도 */}
@@ -86,7 +85,12 @@ export default function LiveLocationLayer() {
       )}
 
       {/* 오른쪽 하단 컨트롤 버튼들 */}
-      <div className='absolute right-3 bottom-3 z-[1] grid gap-2'>
+      <div
+        style={{
+          bottom: `${NavBarHeight + 16}px`,
+        }}
+        className='absolute right-3 z-[1] grid gap-2'
+      >
         <button
           onClick={() => {
             if (!loc || !map) return
