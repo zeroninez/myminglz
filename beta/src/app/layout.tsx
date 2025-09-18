@@ -41,6 +41,7 @@ export const metadata: Metadata = {
       template: APP_INFO.titleTemplate,
     },
     description: APP_INFO.description,
+    url: APP_INFO.url,
   },
   referrer: 'origin-when-cross-origin',
   robots: {

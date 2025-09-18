@@ -1,6 +1,7 @@
 {
-  "name": "MyMinglz",
-  "short_name": "MyMinglz",
+  "name": "myminglz",
+  "short_name": "myminglz",
+  "description": "myminglz Beta",
   "icons": [
     {
       "src": "/icons/android-icon-36x36.png",

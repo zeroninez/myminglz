@@ -1,9 +1,11 @@
 export const APP_INFO = {
-  name: 'MyMinglz',
-  title: 'MyMinglz',
-  titleTemplate: '%s - MyMinglz',
-  description: 'MyMinglz Beta',
-  keywords: ['MyMinglz', 'Minglz', 'Social', 'Hangout'],
+  name: 'myminglz',
+  title: 'myminglz',
+  titleTemplate: '%s - myminglz',
+  description: 'myminglz Beta',
+  keywords: ['myminglz', 'minglz', 'social', 'hangout'],
+  robots: 'index, follow',
+  url: 'https://app.myminglz.com',
   authors: [
     {
       name: 'zeroninez',
