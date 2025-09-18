@@ -4,9 +4,11 @@ import { useEffect, useRef } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { NavBar } from './NavBar'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 
 export const Layout = ({ children }) => {
   const ref = useRef(null)
+  const pathname = usePathname()
 
   return (
     <>
@@ -25,7 +27,7 @@ export const Layout = ({ children }) => {
       >
         {children}
         <Toaster />
-        <NavBar />
+        {pathname !== '/' && <NavBar />}
       </motion.div>
     </>
   )
