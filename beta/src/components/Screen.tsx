@@ -38,7 +38,7 @@ export const Screen = ({ header, nav, isFixed, children, className, ...rest }: S
     <div
       className={classNames(
         baseScreenClasses,
-        header ? `pt-safe-offset-10` : ``,
+        header ? `pt-safe-offset-14` : ``,
         nav ? `` : `pb-safe`,
         isFixed ? `overflow-y-hidden` : `overflow-y-scroll`,
         className ? className : `bg-transparent`,

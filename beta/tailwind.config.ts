@@ -46,6 +46,9 @@ module.exports = {
           '0px -1px 0px 0px rgba(255, 255, 255, 0.50)',
         ],
       },
+      aspectRatio: {
+        post: '118 / 168',
+      },
       colors: {
         primary: {
           50: '#f7fee7',

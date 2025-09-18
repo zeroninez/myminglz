@@ -40,29 +40,29 @@ export interface HeaderProps {
   left?: {
     icon?: string
     text?: string
+    className?: string
     onClick?: () => void
   }
   right?: {
     icon?: string
     text?: string
+    className?: string
     onClick?: () => void
   }
 }
 
 export const Header = ({ title, left, right }: HeaderProps) => {
-  const baseHeaderClasses = 'w-full h-fit pt-0 pb-4 pl-4 pr-4 flex flex-row items-center relative'
-  const titleClasses = 'absolute top-0.5 right-0 w-fit h-fit text-lg left-1/2 transform -translate-x-1/2'
-  const leftHeaderClasses = 'justify-start'
-  const rightHeaderClasses = 'justify-end'
-  const bothHeaderClasses = 'justify-between'
-  const actionButtonClasses = 'flex flex-row space-x-2 w-fit justify-center items-center active:text-primary-300'
+  const baseHeaderClasses = 'w-full h-14 py-4 px-4 flex flex-row items-center relative'
+  const titleClasses =
+    'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 leading-none w-fit h-fit text-lg font-medium'
+  const leftHeaderClasses = 'justify-start leading-none'
+  const rightHeaderClasses = 'justify-end leading-none'
+  const bothHeaderClasses = 'justify-between leading-none'
+  const actionButtonClasses =
+    'flex flex-row space-x-2 w-fit justify-center items-center active:text-primary-300 leading-none'
 
   return (
-    <div
-      className={classNames(
-        'fixed z-10 top-0 pt-safe left-0 w-screen h-fit text-white bg-white bg-opacity-10 backdrop-blur-md',
-      )}
-    >
+    <div className={classNames('fixed z-10 top-0 pt-safe left-0 w-screen h-fit text-white', '')}>
       <div
         className={classNames(
           baseHeaderClasses,
@@ -72,16 +72,16 @@ export const Header = ({ title, left, right }: HeaderProps) => {
         )}
       >
         {left && (
-          <div className={actionButtonClasses} onClick={left.onClick}>
+          <div className={classNames(actionButtonClasses, left.className)} onClick={left.onClick}>
             {left.icon && <Icon icon={left.icon} />}
             {left.text && <div>{left.text}</div>}
           </div>
         )}
         {title && <div className={titleClasses}>{title}</div>}
         {right && (
-          <div className={actionButtonClasses} onClick={right.onClick}>
-            {left.icon && <Icon icon={right.icon} />}
-            {left.text && <div>{right.text}</div>}
+          <div className={classNames(actionButtonClasses, right.className)} onClick={right.onClick}>
+            {right.icon && <Icon icon={right.icon} />}
+            {right.text && <div>{right.text}</div>}
           </div>
         )}
       </div>

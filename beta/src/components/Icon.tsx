@@ -14,6 +14,10 @@ import category from '@/svgs/icons/category.svg'
 import folder from '@/svgs/icons/folder.svg'
 import user from '@/svgs/icons/user.svg'
 import bookmark from '@/svgs/icons/bookmark.svg'
+import close from '@/svgs/icons/close.svg'
+import left from '@/svgs/icons/left.svg'
+import right from '@/svgs/icons/right.svg'
+import search from '@/svgs/icons/search.svg'
 
 export const icons = {
   map,
@@ -28,6 +32,10 @@ export const icons = {
   folder,
   user,
   bookmark,
+  close,
+  left,
+  right,
+  search,
 }
 
 interface IconProps {
@@ -49,7 +57,7 @@ export const Icon = ({ icon, color, size = 24, className, onClick, motion = true
       aria-label={icon}
       className={classNames(
         baseIconClasses,
-        motion ? 'transition-all duration-200 ease-in-out focus:opacity-50 active:opacity-50 active:scale-90' : '',
+        motion ? 'transition-all duration-200 ease-in-out active:opacity-70 active:scale-95' : '',
       )}
       onClick={onClick}
       {...rest}

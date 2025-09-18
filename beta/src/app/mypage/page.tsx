@@ -3,7 +3,7 @@
 import classNames from 'classnames'
 import { Icon, NavBar, Screen } from '@/components'
 import { useRouter } from 'next/navigation'
-import { AliasButton, PostShelves, ProfileCard, StatusBar } from './components'
+import { AliasButton, PostShelves, ProfileCard, StatusBar } from './_components'
 import { NavBarHeight } from '@/constants/sizeguide'
 
 export default function Page() {
@@ -15,7 +15,7 @@ export default function Page() {
       credit: 1300,
       follower: 365,
       following: 234,
-      profileImage: '/assets/images/profile.png',
+      profileImage: null,
       name: '제로나인즈',
       subname: '대표이사/PM',
       description: `아이디어 장전 완료🎯 | 서비스 기획러 | UX 탐험가 | IT 마법사 사람을 잇는 디자인, 경험을 만드는 기획 | IT & UX 설계자아아아아아아아아아아아아아아아입니다.`,
