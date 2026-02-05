@@ -1,19 +1,134 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Screen, Icon } from '@/components'
 import { useAuthStore } from '@/stores/authStore'
+import { useProfileStore } from '@/stores/profileStore'
 import classNames from 'classnames'
 import toast from 'react-hot-toast'
 
 export default function SettingsPage() {
   const router = useRouter()
   const { user, signOut } = useAuthStore()
+  const { profile, fetchProfile, updateProfile, checkUsernameAvailable } = useProfileStore()
+
+  const [isEditing, setIsEditing] = useState(false)
+  const [displayName, setDisplayName] = useState('')
+  const [username, setUsername] = useState('')
+  const [bio, setBio] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
+
+  // 프로필 로드
+  useEffect(() => {
+    if (user) {
+      fetchProfile(user.id)
+    }
+  }, [user, fetchProfile])
+
+  // 프로필 데이터로 폼 초기화
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.display_name)
+      setUsername(profile.username)
+      setBio(profile.bio || '')
+    }
+  }, [profile])
+
+  // username 중복 체크 (디바운스)
+  useEffect(() => {
+    if (!isEditing || !username || username.length < 3) {
+      setUsernameStatus('idle')
+      return
+    }
+
+    // 현재 username과 동일하면 체크 불필요
+    if (username === profile?.username) {
+      setUsernameStatus('available')
+      return
+    }
+
+    const isValidFormat = /^[a-zA-Z0-9_]{3,20}$/.test(username)
+    if (!isValidFormat) {
+      setUsernameStatus('idle')
+      return
+    }
+
+    setUsernameStatus('checking')
+    const timer = setTimeout(async () => {
+      const isAvailable = await checkUsernameAvailable(username, user?.id)
+      setUsernameStatus(isAvailable ? 'available' : 'taken')
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [username, isEditing, profile?.username, checkUsernameAvailable, user?.id])
 
   const handleSignOut = async () => {
     await signOut()
     toast.success('로그아웃 되었습니다')
     router.push('/')
+  }
+
+  const handleCancelEdit = () => {
+    if (profile) {
+      setDisplayName(profile.display_name)
+      setUsername(profile.username)
+      setBio(profile.bio || '')
+    }
+    setIsEditing(false)
+    setUsernameStatus('idle')
+  }
+
+  const validateForm = () => {
+    if (!displayName.trim()) {
+      toast.error('이름을 입력해주세요')
+      return false
+    }
+    if (displayName.length > 30) {
+      toast.error('이름은 30자 이내로 입력해주세요')
+      return false
+    }
+    if (!username.trim()) {
+      toast.error('아이디를 입력해주세요')
+      return false
+    }
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+      toast.error('아이디는 영어, 숫자, 언더스코어만 사용 가능합니다 (3-20자)')
+      return false
+    }
+    if (usernameStatus === 'taken') {
+      toast.error('이미 사용 중인 아이디입니다')
+      return false
+    }
+    if (bio.length > 150) {
+      toast.error('한줄 소개는 150자 이내로 입력해주세요')
+      return false
+    }
+    return true
+  }
+
+  const handleSaveProfile = async () => {
+    if (!user) return
+    if (!validateForm()) return
+
+    setIsSubmitting(true)
+
+    const { error } = await updateProfile(user.id, {
+      display_name: displayName.trim(),
+      username: username.toLowerCase(),
+      bio: bio.trim(),
+    })
+
+    if (error) {
+      toast.error(error.message || '프로필 수정에 실패했습니다')
+      setIsSubmitting(false)
+      return
+    }
+
+    toast.success('프로필이 수정되었습니다')
+    setIsEditing(false)
+    setIsSubmitting(false)
   }
 
   return (
@@ -27,7 +142,100 @@ export default function SettingsPage() {
         },
       }}
     >
-      <div className='w-full h-full flex flex-col px-4 py-4 gap-6'>
+      <div className='w-full h-full flex flex-col px-4 py-4 gap-6 overflow-y-auto'>
+        {/* 프로필 섹션 */}
+        <section className='flex flex-col gap-3'>
+          <div className='flex flex-row justify-between items-center'>
+            <h2 className='text-sm font-medium text-gray-400'>프로필</h2>
+            {!isEditing ? (
+              <button onClick={() => setIsEditing(true)} className='text-sm text-primary'>
+                수정
+              </button>
+            ) : (
+              <div className='flex flex-row gap-3'>
+                <button onClick={handleCancelEdit} className='text-sm text-gray-400'>
+                  취소
+                </button>
+                <button
+                  onClick={handleSaveProfile}
+                  disabled={isSubmitting || usernameStatus === 'taken' || usernameStatus === 'checking'}
+                  className='text-sm text-primary disabled:opacity-50'
+                >
+                  {isSubmitting ? '저장 중...' : '저장'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className='bg-gray-800 rounded-xl p-4 flex flex-col gap-4'>
+            {/* 이름 */}
+            <div className='flex flex-col gap-2'>
+              <span className='text-sm text-gray-400'>이름</span>
+              {isEditing ? (
+                <input
+                  type='text'
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  maxLength={30}
+                  className='w-full h-10 px-3 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors'
+                  disabled={isSubmitting}
+                />
+              ) : (
+                <span className='text-sm text-white'>{profile?.display_name || '-'}</span>
+              )}
+            </div>
+
+            {/* 아이디 */}
+            <div className='flex flex-col gap-2'>
+              <span className='text-sm text-gray-400'>아이디</span>
+              {isEditing ? (
+                <>
+                  <div className='relative'>
+                    <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm'>@</span>
+                    <input
+                      type='text'
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                      maxLength={20}
+                      className='w-full h-10 pl-8 pr-3 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors'
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-xs text-gray-500'>영어, 숫자, 언더스코어 (3-20자)</span>
+                    {usernameStatus === 'checking' && <span className='text-xs text-gray-400'>확인 중...</span>}
+                    {usernameStatus === 'available' && <span className='text-xs text-green-400'>사용 가능</span>}
+                    {usernameStatus === 'taken' && <span className='text-xs text-red-400'>이미 사용 중</span>}
+                  </div>
+                </>
+              ) : (
+                <span className='text-sm text-white'>@{profile?.username || '-'}</span>
+              )}
+            </div>
+
+            {/* 한줄 소개 */}
+            <div className='flex flex-col gap-2'>
+              <span className='text-sm text-gray-400'>한줄 소개</span>
+              {isEditing ? (
+                <>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    maxLength={150}
+                    rows={3}
+                    className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors resize-none'
+                    disabled={isSubmitting}
+                    placeholder='간단한 자기소개를 입력해주세요'
+                  />
+                  <span className='text-xs text-gray-500 text-right'>{bio.length}/150</span>
+                </>
+              ) : (
+                <span className='text-sm text-white'>{profile?.bio || '-'}</span>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* 계정 정보 섹션 */}
         <section className='flex flex-col gap-3'>
           <h2 className='text-sm font-medium text-gray-400'>계정 정보</h2>
