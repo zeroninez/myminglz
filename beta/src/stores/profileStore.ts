@@ -57,17 +57,21 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
 
   createProfile: async (userId, data) => {
     try {
-      const { error } = await supabase.from('profiles').insert({
-        id: userId,
-        username: data.username,
-        display_name: data.display_name,
-        bio: data.bio || '',
-      })
+      const { data: newProfile, error } = await supabase
+        .from('profiles')
+        .insert({
+          id: userId,
+          username: data.username,
+          display_name: data.display_name,
+          bio: data.bio || '',
+        })
+        .select()
+        .single()
 
       if (error) throw error
 
-      // 생성 후 프로필 다시 가져오기
-      await get().fetchProfile(userId)
+      // 직접 profile 설정 (fetchProfile 호출하지 않음)
+      set({ profile: newProfile, isLoading: false })
       return { error: null }
     } catch (error) {
       return { error: error as Error }
@@ -81,15 +85,17 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       if (data.display_name !== undefined) updateData.display_name = data.display_name
       if (data.bio !== undefined) updateData.bio = data.bio
 
-      const { error } = await supabase
+      const { data: updatedProfile, error } = await supabase
         .from('profiles')
         .update(updateData)
         .eq('id', userId)
+        .select()
+        .single()
 
       if (error) throw error
 
-      // 업데이트 후 프로필 다시 가져오기
-      await get().fetchProfile(userId)
+      // 직접 profile 설정 (fetchProfile 호출하지 않음)
+      set({ profile: updatedProfile, isLoading: false })
       return { error: null }
     } catch (error) {
       return { error: error as Error }
