@@ -15,11 +15,8 @@ export const StatusBar = ({ credit }: { credit: number }) => {
         <span className='text-sm font-normal leading-none'>{credit.toLocaleString()}</span>
       </div>
       <div className='flex flex-row gap-3 items-center'>
-        <button
-          onClick={() => router.push('/mypage/settings')}
-          className='active:scale-95 transition-transform'
-        >
-          <Icon icon='settings' size={24} />
+        <button onClick={() => router.push('/mypage/settings')} className='active:scale-95 transition-transform'>
+          설정
         </button>
         <Icon icon='star' size={24} />
       </div>
