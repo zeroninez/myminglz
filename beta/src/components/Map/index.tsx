@@ -1,19 +1,23 @@
 'use client'
 
 import { GoogleMap } from '@react-google-maps/api'
-import { useMemo, useCallback, useRef, memo } from 'react'
+import { useMemo, useCallback, useRef, memo, useState } from 'react'
 import { NavBarHeight } from '@/constants/sizeguide'
 import { useGoogleMaps } from '@/app/providers/GoogleMapsProvider'
+import { mapStyle as defaultMapStyle } from './styles'
+import { MapStyleDebugPanel } from './MapStyleDebugPanel'
 
 interface MapProps {
   defaultCenter?: { lat: number; lng: number } | null
   defaultZoom?: number
   children?: React.ReactNode
+  onIdle?: (map: google.maps.Map) => void
 }
 
-function MapBase({ defaultCenter, defaultZoom = 10, children }: MapProps) {
+function MapBase({ defaultCenter, defaultZoom = 10, children, onIdle }: MapProps) {
   const { isLoaded } = useGoogleMaps()
   const mapRef = useRef<google.maps.Map>()
+  const [mapStyle, setMapStyle] = useState(defaultMapStyle)
 
   const center = useMemo(() => defaultCenter ?? ({ lat: 37.5665, lng: 126.978 } as const), [defaultCenter])
 
@@ -21,8 +25,20 @@ function MapBase({ defaultCenter, defaultZoom = 10, children }: MapProps) {
     mapRef.current = m
   }, [])
 
+  const handleIdle = useCallback(() => {
+    if (!mapRef.current) return
+    onIdle?.(mapRef.current)
+  }, [onIdle])
+
+  const handleStyleChange = useCallback((newStyles: google.maps.MapTypeStyle[]) => {
+    setMapStyle(newStyles)
+    // 맵이 이미 로드된 경우 즉시 스타일 업데이트
+    if (mapRef.current) {
+      mapRef.current.setOptions({ styles: newStyles })
+    }
+  }, [])
+
   if (!isLoaded) {
-    // 여기에 스피너/플레이스홀더 원하는대로
     return (
       <div
         style={{
@@ -38,25 +54,32 @@ function MapBase({ defaultCenter, defaultZoom = 10, children }: MapProps) {
   }
 
   return (
-    <GoogleMap
-      onLoad={onMapLoad}
-      mapContainerStyle={{ width: '100%', height: '100dvh' }}
-      center={center}
-      zoom={defaultZoom}
-      options={{
-        gestureHandling: 'greedy',
-        disableDefaultUI: true,
-        streetViewControl: false,
-        mapTypeControl: false,
-        fullscreenControl: false,
-        zoomControl: false,
-        clickableIcons: false,
-        keyboardShortcuts: false,
-        scaleControl: false,
-      }}
-    >
-      {children}
-    </GoogleMap>
+    <>
+      <GoogleMap
+        onLoad={onMapLoad}
+        onIdle={handleIdle}
+        mapContainerStyle={{ width: '100%', height: '100dvh' }}
+        center={center}
+        zoom={defaultZoom}
+        options={{
+          gestureHandling: 'greedy',
+          disableDefaultUI: true,
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          zoomControl: false,
+          clickableIcons: false,
+          keyboardShortcuts: false,
+          scaleControl: false,
+          styles: mapStyle,
+        }}
+      >
+        {children}
+      </GoogleMap>
+
+      {/* 개발 모드에서만 표시됨 */}
+      <MapStyleDebugPanel initialStyles={defaultMapStyle} onStyleChange={handleStyleChange} />
+    </>
   )
 }
 

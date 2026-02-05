@@ -25,7 +25,7 @@ export const NavBar = () => {
     <div
       className={classNames(
         // NavBar container
-        `fixed bottom-0 z-40 inset-x-0 h-[${NavBarHeight}px]`,
+        `fixed bottom-0 z-40 inset-x-0 h-[${NavBarHeight}px] max-w-lg mx-auto`,
         `flex flex-row justify-center items-center`,
         `bg-navbar rounded-t-xl`,
       )}
