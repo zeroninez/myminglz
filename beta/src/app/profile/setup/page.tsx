@@ -102,7 +102,14 @@ export default function ProfileSetupPage() {
     }
 
     toast.success('프로필이 생성되었습니다!')
-    router.push('/map')
+
+    // router.push가 가끔 작동하지 않는 경우를 대비해 replace 사용
+    router.replace('/map')
+
+    // 만약 1초 후에도 페이지가 안 바뀌면 강제 이동
+    setTimeout(() => {
+      window.location.href = '/map'
+    }, 1000)
   }
 
   if (authLoading || profileLoading) {
