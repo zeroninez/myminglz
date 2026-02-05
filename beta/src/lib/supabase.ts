@@ -1,6 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
+// Re-export for backward compatibility
+export { createClient } from './supabase/client'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+import { createBrowserClient } from '@supabase/ssr'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Legacy client (for direct usage in client components)
+export const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+)
