@@ -18,13 +18,21 @@ export default function Page() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
-  // 이미 로그인된 경우 map 페이지로 이동
+  // 이미 로그인된 경우 - 상태에 따라 적절한 페이지로 리다이렉트
   useEffect(() => {
-    if (!isLoading && user) {
-      router.push('/map')
+    if (!isLoading && user && !isRedirecting) {
+      setIsRedirecting(true)
+      if (!user.email_confirmed_at) {
+        // 이메일 미확인
+        router.replace('/auth/verify')
+      } else {
+        // 이메일 확인됨 - 프로필 체크는 미들웨어가 처리
+        router.replace('/map')
+      }
     }
-  }, [user, isLoading, router])
+  }, [user, isLoading, isRedirecting, router])
 
   const resetForm = () => {
     setEmail('')
@@ -86,13 +94,12 @@ export default function Page() {
     }
 
     toast.success('회원가입 성공! 이메일을 확인해주세요')
-    setActiveTab('login')
-    resetForm()
+    router.push('/auth/verify')
     setIsSubmitting(false)
   }
 
-  // 로딩 중이거나 이미 로그인된 경우 로딩 화면 표시
-  if (isLoading || user) {
+  // 로딩 중이거나 리다이렉트 중인 경우 로딩 화면 표시
+  if (isLoading || isRedirecting) {
     return (
       <Screen className='bg-[#242424] flex flex-col justify-center items-center'>
         <div className='animate-pulse'>
