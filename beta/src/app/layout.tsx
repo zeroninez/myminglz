@@ -7,6 +7,7 @@ import { Metadata, Viewport } from 'next'
 import { APP_INFO } from '@/constants/metadata'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import GoogleMapsProvider from './providers/GoogleMapsProvider'
+import AuthProvider from './providers/AuthProvider'
 
 export const metadata: Metadata = {
   title: {
@@ -91,9 +92,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <body className={`${pretendard}`}>
-        <GoogleMapsProvider>
-          <Layout>{children}</Layout>
-        </GoogleMapsProvider>
+        <AuthProvider>
+          <GoogleMapsProvider>
+            <Layout>{children}</Layout>
+          </GoogleMapsProvider>
+        </AuthProvider>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
       </body>
