@@ -155,6 +155,9 @@ export default function SettingsPage() {
         throw new Error(data.error || '계정 삭제에 실패했습니다')
       }
 
+      // 클라이언트 상태 초기화
+      await signOut()
+
       toast.success('계정이 삭제되었습니다')
       router.push('/')
     } catch (error: any) {
