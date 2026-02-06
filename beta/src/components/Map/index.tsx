@@ -16,7 +16,7 @@ interface MapProps {
 
 function MapBase({ defaultCenter, defaultZoom = 10, children, onIdle }: MapProps) {
   const { isLoaded } = useGoogleMaps()
-  const mapRef = useRef<google.maps.Map>()
+  const mapRef = useRef<google.maps.Map>(null)
   const [mapStyle, setMapStyle] = useState(defaultMapStyle)
 
   const center = useMemo(() => defaultCenter ?? ({ lat: 37.5665, lng: 126.978 } as const), [defaultCenter])
