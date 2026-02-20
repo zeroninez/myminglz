@@ -2,12 +2,26 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*", "./*", "public/*"],
-      "icons": ["public/icons"],
-      "img": ["public/img"]
+      "@/*": [
+        "src/*",
+        "./*",
+        "public/*"
+      ],
+      "icons": [
+        "public/icons"
+      ],
+      "img": [
+        "public/img"
+      ]
     },
     "target": "es2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["@serwist/next/typings"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "webworker"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -16,20 +30,25 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "resolveJsonModule": true,
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/screens",
-    "src/screens",
-    "src/app/screens/HubScreen/index/tsx"
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "public/sw.js"
+  ]
 }

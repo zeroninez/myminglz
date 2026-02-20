@@ -2,7 +2,7 @@
 
 import { Icon } from '@/components'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import classNames from 'classnames'
 
 interface ProfileCardProps {

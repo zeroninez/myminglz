@@ -1,18 +1,23 @@
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+import { createRequire } from 'module'
+import withBundleAnalyzerInit from '@next/bundle-analyzer'
+import withSerwistInit from '@serwist/next'
+
+const require = createRequire(import.meta.url)
+
+const withBundleAnalyzer = withBundleAnalyzerInit({
   enabled: process.env.ANALYZE === 'true',
 })
 
-/**
- * A fork of 'next-pwa' that has app directory support
- * @see https://github.com/shadowwalker/next-pwa/issues/424#issuecomment-1332258575
- */
-const withPWA = require('@ducanh2912/next-pwa').default({
-  dest: 'public',
+const withSerwist = withSerwistInit({
+  swSrc: 'src/app/sw.ts',
+  swDest: 'public/sw.js',
+  disable: process.env.NODE_ENV === 'development',
 })
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['three'],
-  reactStrictMode: true, // Recommended for the `pages` directory, default in `app`.
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -29,11 +34,23 @@ const nextConfig = {
       },
     ],
   },
+  // Turbopack configuration (default bundler for next dev)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+    resolveAlias: {
+      'react-native': 'react-native-web',
+    },
+    resolveExtensions: ['.web.js', '.web.jsx', '.web.ts', '.web.tsx', '.js', '.jsx', '.ts', '.tsx'],
+  },
+  // Webpack configuration (used with --webpack flag for production builds)
   webpack(config, { isServer }) {
     if (!isServer) {
-      // We're in the browser build, so we can safely exclude the sharp module
       config.externals.push('sharp')
-      // We're in the browser build, so we can safely ignore the fs module
       config.resolve.fallback = {
         fs: false,
       }
@@ -81,22 +98,4 @@ const nextConfig = {
   },
 }
 
-const KEYS_TO_OMIT = ['webpackDevMiddleware', 'configOrigin', 'target', 'analyticsId', 'webpack5', 'amp', 'assetPrefix']
-
-module.exports = (_phase, { defaultConfig }) => {
-  const plugins = [[withPWA], [withBundleAnalyzer, {}]]
-
-  const wConfig = plugins.reduce((acc, [plugin, config]) => plugin({ ...acc, ...config }), {
-    ...defaultConfig,
-    ...nextConfig,
-  })
-
-  const finalConfig = {}
-  Object.keys(wConfig).forEach((key) => {
-    if (!KEYS_TO_OMIT.includes(key)) {
-      finalConfig[key] = wConfig[key]
-    }
-  })
-
-  return finalConfig
-}
+export default withSerwist(withBundleAnalyzer(nextConfig))

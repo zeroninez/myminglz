@@ -1,7 +1,170 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" important;
+@import "tailwindcss-safe-area";
 
+@theme {
+  /* Font sizes - replace defaults */
+  --text-*: initial;
+  --text-xxxs: 0.6rem;
+  --text-xxs: 0.65rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  /* Custom colors */
+  --color-primary: #F6FF80;
+  --color-black: #1F211E;
+  --color-navbar: #090A09;
+  --color-card: #3A3A3A;
+  --color-dim-text: #4A4A4A;
+  --color-yellow: #F6FF80;
+
+  /* Gray (zinc values) */
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f4f4f5;
+  --color-gray-200: #e4e4e7;
+  --color-gray-300: #d4d4d8;
+  --color-gray-400: #a1a1aa;
+  --color-gray-500: #71717a;
+  --color-gray-600: #52525b;
+  --color-gray-700: #3f3f46;
+  --color-gray-800: #27272a;
+  --color-gray-900: #18181b;
+
+  /* blueGray (slate) */
+  --color-blueGray-50: #f8fafc;
+  --color-blueGray-100: #f1f5f9;
+  --color-blueGray-200: #e2e8f0;
+  --color-blueGray-300: #cbd5e1;
+  --color-blueGray-400: #94a3b8;
+  --color-blueGray-500: #64748b;
+  --color-blueGray-600: #475569;
+  --color-blueGray-700: #334155;
+  --color-blueGray-800: #1e293b;
+  --color-blueGray-900: #0f172a;
+
+  /* coolGray */
+  --color-coolGray-50: #f9fafb;
+  --color-coolGray-100: #f3f4f6;
+  --color-coolGray-200: #e5e7eb;
+  --color-coolGray-300: #d1d5db;
+  --color-coolGray-400: #9ca3af;
+  --color-coolGray-500: #6b7280;
+  --color-coolGray-600: #4b5563;
+  --color-coolGray-700: #374151;
+  --color-coolGray-800: #1f2937;
+  --color-coolGray-900: #111827;
+
+  /* trueGray (neutral) */
+  --color-trueGray-50: #fafafa;
+  --color-trueGray-100: #f5f5f5;
+  --color-trueGray-200: #e5e5e5;
+  --color-trueGray-300: #d4d4d4;
+  --color-trueGray-400: #a3a3a3;
+  --color-trueGray-500: #737373;
+  --color-trueGray-600: #525252;
+  --color-trueGray-700: #404040;
+  --color-trueGray-800: #262626;
+  --color-trueGray-900: #171717;
+
+  /* warmGray (stone) */
+  --color-warmGray-50: #fafaf9;
+  --color-warmGray-100: #f5f5f4;
+  --color-warmGray-200: #e7e5e4;
+  --color-warmGray-300: #d6d3d1;
+  --color-warmGray-400: #a8a29e;
+  --color-warmGray-500: #78716c;
+  --color-warmGray-600: #57534e;
+  --color-warmGray-700: #44403c;
+  --color-warmGray-800: #292524;
+  --color-warmGray-900: #1c1917;
+
+  /* lightBlue (sky) */
+  --color-lightBlue-50: #f0f9ff;
+  --color-lightBlue-100: #e0f2fe;
+  --color-lightBlue-200: #bae6fd;
+  --color-lightBlue-300: #7dd3fc;
+  --color-lightBlue-400: #38bdf8;
+  --color-lightBlue-500: #0ea5e9;
+  --color-lightBlue-600: #0284c7;
+  --color-lightBlue-700: #0369a1;
+  --color-lightBlue-800: #075985;
+  --color-lightBlue-900: #0c4a6e;
+
+  /* Box shadow */
+  --shadow-canvas: inset 0 0 0 1px rgba(245, 245, 245, 0.37);
+
+  /* Aspect ratio */
+  --aspect-post: 118 / 168;
+
+  /* Animations */
+  --animate-step-in: step-in 0.6s ease-in infinite alternate;
+  --animate-step-out: step-out 0.6s ease-in infinite alternate;
+  --animate-heartbeat: heartbeat 1.5s linear infinite alternate;
+  --animate-breathe-tongue: breathe-tongue 1.5s ease-in-out infinite;
+  --animate-wiggle: wiggle 1.5s ease-in-out infinite alternate;
+}
+
+/* Custom background utilities */
+@utility bg-primary-gradient {
+  background-image: radial-gradient(147.78% 147.78% at 11.86% 10.4%, #A3E635 0%, #70EFA3 100%);
+}
+
+@utility bg-sheet-gradient {
+  background-image: linear-gradient(180deg, rgba(21, 21, 21, 0.80) 0%, rgba(90, 90, 90, 0.80) 100%);
+}
+
+/* Custom drop shadow utility */
+@utility drop-shadow-white {
+  filter: drop-shadow(0px 1px 0px rgba(255, 255, 255, 0.50))
+    drop-shadow(1px 0px 0px rgba(255, 255, 255, 0.50))
+    drop-shadow(-1px 0px 0px rgba(255, 255, 255, 0.50))
+    drop-shadow(0px -1px 0px rgba(255, 255, 255, 0.50));
+}
+
+/* Keyframes */
+@keyframes step-in {
+  0% { opacity: 100%; transform: scale(1); }
+  100% { opacity: 30%; transform: scale(0.95); }
+}
+
+@keyframes step-out {
+  0% { opacity: 30%; transform: scale(0.95); }
+  100% { opacity: 100%; transform: scale(1); }
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(0.99); }
+  10% { transform: scale(1); }
+  20% { transform: scale(0.99); }
+  30% { transform: scale(1); }
+  40% { transform: scale(0.99); }
+  100% { transform: scale(0.99); }
+}
+
+@keyframes breathe-tongue {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(0.8); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes spining {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes wiggle {
+  0% { opacity: 100%; }
+  50% { opacity: 60%; }
+  100% { opacity: 100%; }
+}
+
+/* Base styles */
 @layer base {
   * {
     box-sizing: border-box;
@@ -35,18 +198,10 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /*화살표 배경 넣기*/
-    /* background: #fff url('이미지경로') no-repeat 98% center; */
   }
 
   select::-ms-expand {
-    /* 화살표 없애기 for IE10, 11*/
     display: none;
-  }
-
-  div {
-    /* border: 1px solid red;
-    border-style: dashed; */
   }
 
   #__next,
@@ -54,7 +209,6 @@
   body {
     margin: 0;
     padding: 0;
-    /* 16px */
     font-size: 100%;
     background: #A2EADC;
     color: #fff;
@@ -81,25 +235,20 @@
     pointer-events: none;
   }
 
-  /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
   ::-webkit-scrollbar {
     display: none;
   }
 
   .no-scroll-bar {
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
   }
 
   .no-scroll-bar::-webkit-scrollbar {
     display: none;
-    /* Chrome, Safari, Opera*/
   }
 
   .checking {
-    /*  border border-red-500 border-dashed */
     border: 1px solid red;
     border-style: dashed;
   }

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CircleF, MarkerF, useGoogleMap } from '@react-google-maps/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { NavBarHeight } from '@/constants/sizeguide'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 
 type Tracking = false | 'observe' | 'follow'
 
