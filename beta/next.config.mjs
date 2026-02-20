@@ -1,5 +1,17 @@
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+import { createRequire } from 'module'
+import withBundleAnalyzerInit from '@next/bundle-analyzer'
+import withSerwistInit from '@serwist/next'
+
+const require = createRequire(import.meta.url)
+
+const withBundleAnalyzer = withBundleAnalyzerInit({
   enabled: process.env.ANALYZE === 'true',
+})
+
+const withSerwist = withSerwistInit({
+  swSrc: 'src/app/sw.ts',
+  swDest: 'public/sw.js',
+  disable: process.env.NODE_ENV === 'development',
 })
 
 /** @type {import('next').NextConfig} */
@@ -22,7 +34,7 @@ const nextConfig = {
       },
     ],
   },
-  // Turbopack configuration (default bundler in Next.js 16)
+  // Turbopack configuration (default bundler for next dev)
   turbopack: {
     rules: {
       '*.svg': {
@@ -35,7 +47,7 @@ const nextConfig = {
     },
     resolveExtensions: ['.web.js', '.web.jsx', '.web.ts', '.web.tsx', '.js', '.jsx', '.ts', '.tsx'],
   },
-  // Webpack fallback configuration (used with --webpack flag)
+  // Webpack configuration (used with --webpack flag for production builds)
   webpack(config, { isServer }) {
     if (!isServer) {
       config.externals.push('sharp')
@@ -86,4 +98,4 @@ const nextConfig = {
   },
 }
 
-module.exports = withBundleAnalyzer(nextConfig)
+export default withSerwist(withBundleAnalyzer(nextConfig))

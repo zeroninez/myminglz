@@ -3,7 +3,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Icon } from './Icon'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 /**
  * Button

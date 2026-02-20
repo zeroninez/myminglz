@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { NavBar } from './NavBar'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 
 export const Layout = ({ children }) => {
