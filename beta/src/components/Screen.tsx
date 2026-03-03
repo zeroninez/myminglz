@@ -39,12 +39,13 @@ export const Screen = ({ header, nav, isFixed, children, className, ...rest }: S
     <div
       className={classNames(
         baseScreenClasses,
+        'outline-none',
         header ? `pt-safe-offset-14` : ``,
         isFixed ? `overflow-y-hidden` : `overflow-y-scroll scroll-smooth`,
         className ? className : `bg-transparent`,
       )}
       style={{
-        paddingBottom: `${NavBarHeight + 4}px`,
+        paddingBottom: nav ? `${NavBarHeight + 4}px` : `var(--safe-area-inset-bottom)`,
       }}
       {...rest}
     >

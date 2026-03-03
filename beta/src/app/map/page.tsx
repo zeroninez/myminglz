@@ -8,7 +8,7 @@ import LiveLocationLayer from '@/components/Map/LiveLocationLayer'
 
 export default function Page() {
   return (
-    <Screen isFixed className={classNames('')}>
+    <Screen isFixed nav className={classNames('bg-white')}>
       <Map defaultCenter={null} defaultZoom={15}>
         <LiveLocationLayer />
       </Map>

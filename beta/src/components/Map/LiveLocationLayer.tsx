@@ -102,7 +102,7 @@ export default function LiveLocationLayer() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.2 }}
         style={{
-          bottom: `${NavBarHeight + 16}px`,
+          bottom: `${16}px`,
         }}
         className='absolute right-3 z-[1]'
       >
@@ -117,9 +117,7 @@ export default function LiveLocationLayer() {
             }
           }}
           className={`rounded-md px-3 py-2 text-sm shadow transition-colors ${
-            tracking === 'follow'
-              ? 'bg-blue-500 text-white'
-              : 'bg-black text-white'
+            tracking === 'follow' ? 'bg-blue-500 text-white' : 'bg-black text-white'
           }`}
         >
           {tracking === 'follow' ? '따라가는 중' : '현재 위치로'}

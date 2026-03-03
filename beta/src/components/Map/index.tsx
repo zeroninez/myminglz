@@ -43,7 +43,7 @@ function MapBase({ defaultCenter, defaultZoom = 10, children, onIdle }: MapProps
       <div
         style={{
           width: '100%',
-          height: `calc(100dvh - ${NavBarHeight - 24}px)`,
+          height: `calc(100dvh - ${NavBarHeight}px)`,
           display: 'grid',
           placeItems: 'center',
         }}
@@ -58,7 +58,7 @@ function MapBase({ defaultCenter, defaultZoom = 10, children, onIdle }: MapProps
       <GoogleMap
         onLoad={onMapLoad}
         onIdle={handleIdle}
-        mapContainerStyle={{ width: '100%', height: '100dvh' }}
+        mapContainerStyle={{ width: '100%', height: `calc(100dvh - ${NavBarHeight}px)` }}
         center={center}
         zoom={defaultZoom}
         options={{

@@ -214,7 +214,7 @@ export default function SettingsPage() {
           },
         }}
       >
-        <div className='w-full h-full flex flex-col px-4 py-4 gap-6 overflow-y-auto pb-20'>
+        <div className='w-full h-full flex flex-col px-4 py-4 gap-6 overflow-y-auto'>
           <section className='flex flex-col items-center gap-3'>
             <div className={classNames('relative')}>
               <img
@@ -439,7 +439,8 @@ export default function SettingsPage() {
             <div className='flex flex-col gap-2'>
               <h3 className='text-lg font-semibold text-white'>프로필 삭제</h3>
               <p className='text-sm text-gray-400'>
-                <span className='text-white font-medium'>@{profile?.username}</span> 프로필과 관련된 모든 데이터가 삭제됩니다. 계정(이메일/로그인)은 유지됩니다.
+                <span className='text-white font-medium'>@{profile?.username}</span> 프로필과 관련된 모든 데이터가
+                삭제됩니다. 계정(이메일/로그인)은 유지됩니다.
               </p>
             </div>
             <div className='flex flex-col gap-2'>
@@ -457,7 +458,10 @@ export default function SettingsPage() {
             </div>
             <div className='flex flex-row gap-3 mt-2'>
               <button
-                onClick={() => { setShowDeleteProfileModal(false); setDeleteProfileConfirmText('') }}
+                onClick={() => {
+                  setShowDeleteProfileModal(false)
+                  setDeleteProfileConfirmText('')
+                }}
                 disabled={isDeletingProfile}
                 className='flex-1 h-12 bg-gray-800 rounded-xl flex justify-center items-center active:bg-gray-700 transition-colors disabled:opacity-50'
               >
