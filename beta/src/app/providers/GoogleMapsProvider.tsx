@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, PropsWithChildren } from 'react'
+import { createContext, useContext, PropsWithChildren, useEffect } from 'react'
 import { useJsApiLoader } from '@react-google-maps/api'
 
 type Ctx = { isLoaded: boolean }
@@ -17,6 +17,22 @@ const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = ['pla
 // visualization 라이브러리는 히트맵 등에 필요
 
 export default function GoogleMapsProvider({ children }: PropsWithChildren) {
+  // Google Maps JS API 내부 버그: 빠른 드래그/터치 종료 시 이미 해제된 pointer ID로
+  // releasePointerCapture를 호출해 NotFoundError가 발생함. 기능에는 무관한 에러라 suppression 처리.
+  useEffect(() => {
+    const original = Element.prototype.releasePointerCapture
+    Element.prototype.releasePointerCapture = function (pointerId: number) {
+      try {
+        original.call(this, pointerId)
+      } catch {
+        // noop
+      }
+    }
+    return () => {
+      Element.prototype.releasePointerCapture = original
+    }
+  }, [])
+
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script', // 고정된 id 필수
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',

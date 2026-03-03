@@ -13,12 +13,14 @@ export default function SettingsPage() {
   const router = useRouter()
   const { user, signOut } = useAuthStore()
   // AuthProvider가 로그인 시 자동으로 프로필을 로드하므로 별도 fetch 불필요
-  const { profile, updateProfile, checkUsernameAvailable } = useProfileStore()
+  const { profile, updateProfile, checkUsernameAvailable, deleteProfile } = useProfileStore()
 
   const [isEditing, setIsEditing] = useState(false)
   const [displayName, setDisplayName] = useState('')
   const [username, setUsername] = useState('')
   const [bio, setBio] = useState('')
+  const [linkUrl, setLinkUrl] = useState('')
+  const [linkName, setLinkName] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
 
@@ -30,12 +32,19 @@ export default function SettingsPage() {
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
 
+  // 프로필 삭제 관련 상태
+  const [showDeleteProfileModal, setShowDeleteProfileModal] = useState(false)
+  const [deleteProfileConfirmText, setDeleteProfileConfirmText] = useState('')
+  const [isDeletingProfile, setIsDeletingProfile] = useState(false)
+
   // 프로필 데이터로 폼 초기화
   useEffect(() => {
     if (profile) {
       setDisplayName(profile.display_name)
       setUsername(profile.username)
       setBio(profile.bio || '')
+      setLinkUrl(profile.link_url || '')
+      setLinkName(profile.link_name || '')
     }
   }, [profile])
 
@@ -78,6 +87,8 @@ export default function SettingsPage() {
       setDisplayName(profile.display_name)
       setUsername(profile.username)
       setBio(profile.bio || '')
+      setLinkUrl(profile.link_url || '')
+      setLinkName(profile.link_name || '')
     }
     setIsEditing(false)
     setUsernameStatus('idle')
@@ -108,6 +119,10 @@ export default function SettingsPage() {
       toast.error('한줄 소개는 150자 이내로 입력해주세요')
       return false
     }
+    if (linkUrl.trim() && !/^https?:\/\/.+/.test(linkUrl.trim())) {
+      toast.error('링크는 http:// 또는 https://로 시작해야 합니다')
+      return false
+    }
     return true
   }
 
@@ -121,6 +136,8 @@ export default function SettingsPage() {
       display_name: displayName.trim(),
       username: username.toLowerCase(),
       bio: bio.trim(),
+      link_url: linkUrl.trim() || null,
+      link_name: linkName.trim() || null,
     })
 
     if (error) {
@@ -132,6 +149,27 @@ export default function SettingsPage() {
     toast.success('프로필이 수정되었습니다')
     setIsEditing(false)
     setIsSubmitting(false)
+  }
+
+  const handleDeleteProfile = async () => {
+    if (!profile || !user) return
+    if (deleteProfileConfirmText !== profile.username) {
+      toast.error('아이디를 정확히 입력해주세요')
+      return
+    }
+
+    setIsDeletingProfile(true)
+    const { error } = await deleteProfile(profile.id, user.id)
+
+    if (error) {
+      toast.error(error.message || '프로필 삭제에 실패했습니다')
+      setIsDeletingProfile(false)
+      return
+    }
+
+    toast.success('프로필이 삭제되었습니다')
+    setShowDeleteProfileModal(false)
+    router.replace('/auth/select-profile')
   }
 
   const handleDeleteAccount = async () => {
@@ -291,6 +329,42 @@ export default function SettingsPage() {
                   <span className='text-sm text-white'>{profile?.bio || '-'}</span>
                 )}
               </div>
+
+              {/* 링크 */}
+              <div className='flex flex-col gap-2'>
+                <span className='text-sm text-gray-400'>링크</span>
+                {isEditing ? (
+                  <div className='flex flex-col gap-2'>
+                    <input
+                      type='text'
+                      value={linkName}
+                      onChange={(e) => setLinkName(e.target.value)}
+                      className='w-full h-10 px-3 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors'
+                      disabled={isSubmitting}
+                      placeholder='링크 이름 (예: 포트폴리오)'
+                    />
+                    <input
+                      type='url'
+                      value={linkUrl}
+                      onChange={(e) => setLinkUrl(e.target.value)}
+                      className='w-full h-10 px-3 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors'
+                      disabled={isSubmitting}
+                      placeholder='https://example.com'
+                    />
+                  </div>
+                ) : profile?.link_url ? (
+                  <a
+                    href={profile.link_url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm text-primary underline underline-offset-2 break-all'
+                  >
+                    {profile.link_name || profile.link_url}
+                  </a>
+                ) : (
+                  <span className='text-sm text-white'>-</span>
+                )}
+              </div>
             </div>
           </section>
 
@@ -329,6 +403,13 @@ export default function SettingsPage() {
                 <Icon icon='log-out' size={18} className='text-red-400' />
               </button>
               <button
+                onClick={() => setShowDeleteProfileModal(true)}
+                className='w-full bg-gray-800 rounded-xl p-4 flex flex-row justify-between items-center active:bg-gray-700 transition-colors'
+              >
+                <span className='text-sm text-red-400'>이 프로필 삭제</span>
+                <Icon icon='user-x' size={18} className='text-red-400' />
+              </button>
+              <button
                 onClick={() => setShowDeleteModal(true)}
                 className='w-full bg-gray-800 rounded-xl p-4 flex flex-row justify-between items-center active:bg-gray-700 transition-colors'
               >
@@ -350,6 +431,49 @@ export default function SettingsPage() {
           </section>
         </div>
       </Screen>
+
+      {/* 프로필 삭제 확인 모달 */}
+      {showDeleteProfileModal && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70'>
+          <div className='w-[90%] max-w-sm bg-gray-900 rounded-2xl p-6 flex flex-col gap-4'>
+            <div className='flex flex-col gap-2'>
+              <h3 className='text-lg font-semibold text-white'>프로필 삭제</h3>
+              <p className='text-sm text-gray-400'>
+                <span className='text-white font-medium'>@{profile?.username}</span> 프로필과 관련된 모든 데이터가 삭제됩니다. 계정(이메일/로그인)은 유지됩니다.
+              </p>
+            </div>
+            <div className='flex flex-col gap-2'>
+              <label className='text-sm text-gray-400'>
+                계속하려면 아이디 <span className='text-red-400 font-medium'>@{profile?.username}</span>을 입력하세요
+              </label>
+              <input
+                type='text'
+                value={deleteProfileConfirmText}
+                onChange={(e) => setDeleteProfileConfirmText(e.target.value)}
+                placeholder={profile?.username}
+                className='w-full h-12 px-4 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-500 transition-colors'
+                disabled={isDeletingProfile}
+              />
+            </div>
+            <div className='flex flex-row gap-3 mt-2'>
+              <button
+                onClick={() => { setShowDeleteProfileModal(false); setDeleteProfileConfirmText('') }}
+                disabled={isDeletingProfile}
+                className='flex-1 h-12 bg-gray-800 rounded-xl flex justify-center items-center active:bg-gray-700 transition-colors disabled:opacity-50'
+              >
+                <span className='text-sm font-medium text-gray-300'>취소</span>
+              </button>
+              <button
+                onClick={handleDeleteProfile}
+                disabled={isDeletingProfile || deleteProfileConfirmText !== profile?.username}
+                className='flex-1 h-12 bg-red-600 rounded-xl flex justify-center items-center active:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+              >
+                <span className='text-sm font-medium text-white'>{isDeletingProfile ? '삭제 중...' : '삭제'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 계정 삭제 확인 모달 */}
       {showDeleteModal && (

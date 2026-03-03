@@ -96,7 +96,7 @@ export default function LiveLocationLayer() {
         </>
       )}
 
-      {/* 오른쪽 하단 컨트롤 버튼들 */}
+      {/* 오른쪽 하단 컨트롤 버튼 */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -104,23 +104,25 @@ export default function LiveLocationLayer() {
         style={{
           bottom: `${NavBarHeight + 16}px`,
         }}
-        className='absolute right-3 z-[1] grid gap-2'
+        className='absolute right-3 z-[1]'
       >
         <button
           onClick={() => {
-            if (!loc || !map) return
-            setTracking('follow')
-            map.panTo({ lat: loc.lat, lng: loc.lng })
+            if (tracking === 'follow') {
+              setTracking('observe')
+            } else {
+              if (!loc || !map) return
+              setTracking('follow')
+              map.panTo({ lat: loc.lat, lng: loc.lng })
+            }
           }}
-          className='rounded-md bg-black px-3 py-2 text-sm shadow'
+          className={`rounded-md px-3 py-2 text-sm shadow transition-colors ${
+            tracking === 'follow'
+              ? 'bg-blue-500 text-white'
+              : 'bg-black text-white'
+          }`}
         >
-          현재 위치로
-        </button>
-        <button
-          onClick={() => setTracking((t) => (t === 'follow' ? 'observe' : 'follow'))}
-          className='rounded-md bg-black px-3 py-2 text-sm shadow'
-        >
-          {tracking === 'follow' ? '따라가기 끄기' : '따라가기 켜기'}
+          {tracking === 'follow' ? '따라가는 중' : '현재 위치로'}
         </button>
       </motion.div>
     </>

@@ -5,10 +5,12 @@ import { Toaster } from 'react-hot-toast'
 import { NavBar } from './NavBar'
 import { motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
+import { useAuthStore } from '@/stores/authStore'
 
 export const Layout = ({ children }) => {
   const ref = useRef(null)
   const pathname = usePathname()
+  const { user } = useAuthStore()
 
   return (
     <>
@@ -28,7 +30,7 @@ export const Layout = ({ children }) => {
       >
         {children}
         <Toaster />
-        {pathname !== '/' && !pathname.includes('/auth') && <NavBar />}
+        {user && pathname !== '/' && !pathname.includes('/auth') && <NavBar />}
       </motion.div>
     </>
   )

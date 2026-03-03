@@ -17,7 +17,7 @@ export function useProfiles(searchQuery: string = '') {
 
       let query = supabase
         .from('profiles')
-        .select('id, user_id, username, display_name, bio, profile_image, is_private, created_at, updated_at')
+        .select('id, user_id, username, display_name, bio, link_url, link_name, profile_image, is_private, created_at, updated_at')
         .order('created_at', { ascending: false })
         .limit(50)
 

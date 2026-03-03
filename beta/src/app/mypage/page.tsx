@@ -1,19 +1,42 @@
 'use client'
 
 import classNames from 'classnames'
-import { Icon, NavBar, Screen } from '@/components'
+import {
+  Icon,
+  LinkAction,
+  Screen,
+  ProfileCard,
+  CreateProfileModal,
+  SwitchProfileModal,
+  PostShelves,
+  StatusBar,
+} from '@/components'
 import { useRouter } from 'next/navigation'
-import { AliasButton, PostShelves, ProfileCard, StatusBar } from './_components'
-import { NavBarHeight } from '@/constants/sizeguide'
 import { useProfileStore } from '@/stores/profileStore'
 import { useAuthStore } from '@/stores/authStore'
+import { Profile } from '@/types'
+import { useEffect, useState } from 'react'
 
 export default function Page() {
   const router = useRouter()
 
-  const { signOut } = useAuthStore()
+  const { user, signOut } = useAuthStore()
   // AuthProvider가 로그인 시 자동으로 프로필을 로드하므로 별도 fetch 불필요
-  const { profile } = useProfileStore()
+  const { profile, fetchAllProfiles, switchProfile } = useProfileStore()
+
+  const [restProfiles, setRestProfiles] = useState<Profile[]>([])
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false)
+
+  useEffect(() => {
+    if (!user?.id || !profile?.id) {
+      setRestProfiles([])
+      return
+    }
+    fetchAllProfiles(user.id).then((all) => {
+      setRestProfiles(all.filter((p) => p.id !== profile.id))
+    })
+  }, [user?.id, profile?.id])
 
   const MYPOSTS = [
     { id: 1, title: '첫 번째 글', content: '안녕하세요! 이것은 첫 번째 글입니다.' },
@@ -26,25 +49,26 @@ export default function Page() {
   ]
 
   return (
-    <Screen className={classNames(``)}>
-      <div className='w-full h-dvh flex flex-col snap-y overflow-y-scroll justify-start items-center gap-1'>
-        <div
-          style={{
-            height: `calc(100dvh - ${NavBarHeight}px)`,
-          }}
-          className='w-full flex flex-col snap-start justify-start items-center pt-2 px-2 gap-1'
-        >
-          <StatusBar credit={0} />
-          <ProfileCard
-            mode='user'
-            profiles={[profile, profile, profile]} // 추후 팔로워/팔로잉 프로필 이미지 배열로 대체
-          />
-          <AliasButton text={profile?.username || 'unknown'} link={''} />
-        </div>
-        <div className='w-full min-h-[120vw] px-2 flex flex-col snap-start justify-start items-center gap-1'>
-          <PostShelves />
-        </div>
-      </div>
+    <Screen nav className={classNames(`px-2 pt-2 space-y-1`, ``)}>
+      <StatusBar credit={0} />
+      <ProfileCard
+        mode='mypage'
+        profile={profile}
+        restProfiles={restProfiles}
+        onOpenSwitchModal={() => setIsSwitchModalOpen(true)}
+        onHandleMultiprofile={() => setIsCreateModalOpen(true)}
+      />
+      <LinkAction mode='mypage' name={profile?.link_name || '링크'} link={profile?.link_url || undefined} />
+      <PostShelves />
+      <SwitchProfileModal
+        open={isSwitchModalOpen}
+        onClose={() => setIsSwitchModalOpen(false)}
+        profiles={profile ? [profile, ...restProfiles] : restProfiles}
+        currentProfileId={profile?.id}
+        onSwitch={(profileId) => user?.id && switchProfile(user.id, profileId)}
+        onCreateNew={() => setIsCreateModalOpen(true)}
+      />
+      <CreateProfileModal open={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
     </Screen>
   )
 }

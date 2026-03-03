@@ -43,15 +43,17 @@ export async function updateSession(request: NextRequest) {
   const profileSetupRoute = '/auth/onboarding'
   const isProfileSetupRoute = pathname.startsWith(profileSetupRoute)
 
+  // 활성 프로필 선택 라우트
+  const profileSelectRoute = '/auth/select-profile'
+  const isProfileSelectRoute = pathname.startsWith(profileSelectRoute)
+
   // 보호된 라우트 (로그인 + 이메일 확인 + 프로필 필요)
-  const protectedRoutes = ['/map', '/feed', '/post', '/mypage']
+  const protectedRoutes = ['/map', '/feed', '/post', '/mypage', '/profile']
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   // 1. 비로그인 사용자
   if (!user) {
-    // 보호된 라우트, 프로필 설정 접근 시 홈으로
-    // auth/verify는 signUp 직후 세션이 없는 상태에서도 접근 가능해야 함
-    if (isProtectedRoute || isProfileSetupRoute) {
+    if (isProtectedRoute || isProfileSetupRoute || isProfileSelectRoute) {
       return NextResponse.redirect(new URL('/', request.url))
     }
     return supabaseResponse
@@ -61,28 +63,41 @@ export async function updateSession(request: NextRequest) {
   const isEmailVerified = !!user.email_confirmed_at
 
   if (!isEmailVerified) {
-    // 이메일 미확인 시 verify 페이지만 허용
     if (!isAuthRoute && !isPublicRoute) {
       return NextResponse.redirect(new URL('/auth/verify', request.url))
     }
     return supabaseResponse
   }
 
-  // 3. 이메일 확인된 사용자 - 프로필 체크
-  const { data: profile } = await supabase.from('profiles').select('id').eq('user_id', user.id).single()
-
-  const hasProfile = !!profile
+  // 3. 프로필 존재 여부 체크
+  const { data: profiles } = await supabase.from('profiles').select('id').eq('user_id', user.id).limit(1)
+  const hasProfile = !!profiles && profiles.length > 0
 
   if (!hasProfile) {
-    // 프로필 미설정 시 setup 페이지만 허용
     if (!isProfileSetupRoute && !isPublicRoute) {
       return NextResponse.redirect(new URL('/auth/onboarding', request.url))
     }
     return supabaseResponse
   }
 
-  // 4. 모든 조건 충족 - 로그인 페이지 접근 시 메인으로
-  if (isPublicRoute || isAuthRoute || isProfileSetupRoute) {
+  // 4. 활성 프로필(user_settings) 존재 여부 체크
+  // 테이블이 없거나 레코드가 없으면 data: null → select-profile로 이동
+  const { data: userSettings } = await supabase
+    .from('user_settings')
+    .select('active_profile_id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+  const hasActiveProfile = !!userSettings?.active_profile_id
+
+  if (!hasActiveProfile) {
+    if (!isProfileSelectRoute && !isPublicRoute && !isProfileSetupRoute) {
+      return NextResponse.redirect(new URL('/auth/select-profile', request.url))
+    }
+    return supabaseResponse
+  }
+
+  // 5. 모든 조건 충족 - 인증/설정 라우트 접근 시 메인으로
+  if (isPublicRoute || isAuthRoute || isProfileSetupRoute || isProfileSelectRoute) {
     return NextResponse.redirect(new URL('/map', request.url))
   }
 

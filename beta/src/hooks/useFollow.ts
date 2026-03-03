@@ -9,6 +9,15 @@ export function useFollow(targetProfileId: string) {
   const { user } = useAuthStore()
   const { profile } = useProfileStore() // 현재 로그인한 유저의 profile
 
+  //서비스에 로그인 안한 유저는 팔로우 기능 사용 불가
+  useEffect(() => {
+    if (!user) {
+      setIsFollowing(false)
+      setIsLoading(false)
+    }
+  }, [user])
+
+  // 팔로우 상태
   const [isFollowing, setIsFollowing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 

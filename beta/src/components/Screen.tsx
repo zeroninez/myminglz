@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { Header } from '.'
 import { HeaderProps } from '.'
+import { NavBarHeight } from '@/constants/sizeguide'
 
 /**
  * Screen
@@ -39,10 +40,12 @@ export const Screen = ({ header, nav, isFixed, children, className, ...rest }: S
       className={classNames(
         baseScreenClasses,
         header ? `pt-safe-offset-14` : ``,
-        nav ? `` : `pb-safe`,
-        isFixed ? `overflow-y-hidden` : `overflow-y-scroll`,
+        isFixed ? `overflow-y-hidden` : `overflow-y-scroll scroll-smooth`,
         className ? className : `bg-transparent`,
       )}
+      style={{
+        paddingBottom: `${NavBarHeight + 4}px`,
+      }}
       {...rest}
     >
       {header && <Header title={header.title} left={header.left} right={header.right} />}
