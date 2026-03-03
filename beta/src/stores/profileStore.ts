@@ -14,7 +14,7 @@ interface ProfileState {
   createProfile: (
     userId: string,
     data: { username: string; display_name: string; bio?: string },
-  ) => Promise<{ error: Error | null }>
+  ) => Promise<{ error: Error | null; data: Profile | null }>
   updateProfile: (
     profileId: string,
     data: { username?: string; display_name?: string; bio?: string; link_url?: string | null; link_name?: string | null },
@@ -144,9 +144,9 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       if (error) throw error
 
       set({ profile: newProfile, isLoading: false })
-      return { error: null }
+      return { error: null, data: newProfile }
     } catch (error) {
-      return { error: error as Error }
+      return { error: error as Error, data: null }
     }
   },
 
