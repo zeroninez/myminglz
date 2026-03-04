@@ -2,9 +2,34 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Screen } from '@/components'
+import { Screen, TermsSheet } from '@/components'
 import { useAuthStore } from '@/stores/authStore'
 import toast from 'react-hot-toast'
+
+const TERMS_ITEMS = [
+  {
+    key: 'service',
+    label: '서비스 이용약관 동의',
+    contentPath: '/terms/service.md',
+  },
+  {
+    key: 'privacy',
+    label: '개인정보처리방침 동의',
+    contentPath: '/terms/privacy.md',
+  },
+  {
+    key: 'location',
+    label: '위치정보 수집·이용 동의',
+    contentPath: '/terms/location.md',
+  },
+  {
+    key: 'age',
+    label: '만 14세 이상입니다',
+    contentPath: null,
+  },
+] as const
+
+type TermsKey = (typeof TERMS_ITEMS)[number]['key']
 
 export default function SignupPage() {
   const router = useRouter()
@@ -15,6 +40,24 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const [agreements, setAgreements] = useState<Record<TermsKey, boolean>>({
+    service: false,
+    privacy: false,
+    location: false,
+    age: false,
+  })
+  const [openSheet, setOpenSheet] = useState<{ title: string; contentPath: string } | null>(null)
+
+  const allAgreed = Object.values(agreements).every(Boolean)
+
+  const toggleAll = () => {
+    const next = !allAgreed
+    setAgreements({ service: next, privacy: next, location: next, age: next })
+  }
+
+  const toggleOne = (key: TermsKey) => {
+    setAgreements((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
 
   // 이미 로그인된 경우 리다이렉트
   useEffect(() => {
@@ -46,6 +89,11 @@ export default function SignupPage() {
       return
     }
 
+    if (!allAgreed) {
+      toast.error('필수 약관에 모두 동의해주세요')
+      return
+    }
+
     setIsSubmitting(true)
     const { error } = await signUpWithEmail(email, password)
 
@@ -71,11 +119,11 @@ export default function SignupPage() {
   }
 
   return (
-    <Screen className='bg-[#242424] flex flex-col justify-between items-center'>
+    <Screen className='bg-[#242424] flex flex-col gap-6 justify-between items-start'>
       <div className='w-full flex items-center px-4 pt-4'>
         <button
           onClick={() => router.back()}
-          className='w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 active:scale-95 transition-transform duration-200'
+          className='w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 active:scale-95 transition-transform duration-200'
           aria-label='뒤로가기'
         >
           <svg
@@ -152,30 +200,121 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* 약관 동의 */}
+          <div className='flex flex-col gap-0 border border-gray-700 rounded-xl overflow-hidden mt-2'>
+            {/* 전체 동의 */}
+            <button
+              type='button'
+              onClick={toggleAll}
+              className='w-full flex items-center gap-3 px-4 py-3.5 bg-gray-800 active:bg-gray-700 transition-colors'
+            >
+              <div
+                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${allAgreed ? 'bg-primary border-primary' : 'border-gray-500'}`}
+              >
+                {allAgreed && (
+                  <svg width='10' height='8' viewBox='0 0 10 8' fill='none'>
+                    <path
+                      d='M1 4L3.5 6.5L9 1'
+                      stroke='black'
+                      strokeWidth='1.8'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                )}
+              </div>
+              <span className='text-sm font-semibold text-white'>전체 동의</span>
+            </button>
+
+            <div className='h-px bg-gray-700' />
+
+            {/* 개별 항목 */}
+            {TERMS_ITEMS.map((item) => (
+              <div key={item.key} className='flex items-center gap-3 px-4 py-3'>
+                <button
+                  type='button'
+                  onClick={() => toggleOne(item.key)}
+                  className='flex items-center gap-3 flex-1 min-w-0'
+                >
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${agreements[item.key] ? 'bg-primary border-primary' : 'border-gray-600'}`}
+                  >
+                    {agreements[item.key] && (
+                      <svg width='10' height='8' viewBox='0 0 10 8' fill='none'>
+                        <path
+                          d='M1 4L3.5 6.5L9 1'
+                          stroke='black'
+                          strokeWidth='1.8'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <span className='text-sm text-gray-300 text-left'>
+                    <span className='text-primary text-xs mr-1'>(필수)</span>
+                    {item.label}
+                  </span>
+                </button>
+                {item.contentPath && (
+                  <button
+                    type='button'
+                    onClick={() =>
+                      setOpenSheet({
+                        title: item.label,
+                        contentPath: item.contentPath!,
+                      })
+                    }
+                    className='text-gray-500 active:text-gray-300 transition-colors shrink-0'
+                    aria-label='약관 보기'
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='16'
+                      height='16'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path d='m9 18 6-6-6-6' />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
           <button
             type='submit'
-            disabled={isSubmitting}
-            className='w-full h-14 bg-primary rounded-full flex justify-center items-center mt-2 active:scale-95 transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+            disabled={isSubmitting || !allAgreed}
+            className='w-full h-14 bg-primary rounded-full flex justify-center items-center active:scale-95 transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
           >
-            <span className='text-lg font-semibold text-black'>
-              {isSubmitting ? '가입 중...' : '회원가입'}
-            </span>
+            <span className='text-lg font-semibold text-black'>{isSubmitting ? '가입 중...' : '회원가입'}</span>
           </button>
         </form>
 
         {/* 로그인 링크 */}
         <div className='flex justify-center items-center gap-2'>
           <span className='text-sm text-gray-500'>이미 계정이 있으신가요?</span>
-          <button
-            onClick={() => router.push('/auth/login')}
-            className='text-sm text-primary font-medium'
-          >
+          <button onClick={() => router.push('/auth/login')} className='text-sm text-primary font-medium'>
             로그인
           </button>
         </div>
       </div>
 
       <div className='w-full h-fit py-8 text-center text-sm font-normal leading-[1.2] opacity-40'>© ZERONINEZ</div>
+
+      {openSheet && (
+        <TermsSheet
+          open={!!openSheet}
+          onClose={() => setOpenSheet(null)}
+          title={openSheet.title}
+          contentPath={openSheet.contentPath}
+        />
+      )}
     </Screen>
   )
 }

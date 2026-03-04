@@ -64,7 +64,7 @@ export default function LoginPage() {
       <div className='w-full flex items-center px-4 pt-4'>
         <button
           onClick={() => router.back()}
-          className='w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 active:scale-95 transition-transform duration-200'
+          className='w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 active:scale-95 transition-transform duration-200'
           aria-label='뒤로가기'
         >
           <svg
@@ -130,19 +130,14 @@ export default function LoginPage() {
             disabled={isSubmitting}
             className='w-full h-14 bg-primary rounded-full flex justify-center items-center mt-2 active:scale-95 transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
           >
-            <span className='text-lg font-semibold text-black'>
-              {isSubmitting ? '로그인 중...' : '로그인'}
-            </span>
+            <span className='text-lg font-semibold text-black'>{isSubmitting ? '로그인 중...' : '로그인'}</span>
           </button>
         </form>
 
         {/* 회원가입 링크 */}
         <div className='flex justify-center items-center gap-2'>
           <span className='text-sm text-gray-500'>아직 계정이 없으신가요?</span>
-          <button
-            onClick={() => router.push('/auth/signup')}
-            className='text-sm text-primary font-medium'
-          >
+          <button onClick={() => router.push('/auth/signup')} className='text-sm text-primary font-medium'>
             회원가입
           </button>
         </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Screen, Icon, ProfileImageUpload } from '@/components'
+import { Screen, Icon, ProfileImageUpload, TermsSheet } from '@/components'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 import classNames from 'classnames'
@@ -26,6 +26,8 @@ export default function SettingsPage() {
 
   //프로필 이미지 편집 상태
   const [isEditingImage, setIsEditingImage] = useState(false)
+
+  const [openSheet, setOpenSheet] = useState<{ title: string; contentPath: string } | null>(null)
 
   // 계정 삭제 관련 상태
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -419,6 +421,30 @@ export default function SettingsPage() {
             </div>
           </section>
 
+          {/* 약관 섹션 */}
+          <section className='flex flex-col gap-3'>
+            <h2 className='text-sm font-medium text-gray-400'>약관</h2>
+            <div className='bg-gray-800 rounded-xl p-4 flex flex-col gap-3'>
+              {[
+                { name: '서비스 이용약관', contentPath: '/terms/service.md' },
+                { name: '개인정보처리방침', contentPath: '/terms/privacy.md' },
+                { name: '위치기반서비스 이용약관', contentPath: '/terms/location.md' },
+                { name: '커뮤니티 가이드라인 & 운영정책', contentPath: '/terms/community.md' },
+              ].map((legal) => (
+                <button
+                  key={legal.name}
+                  onClick={() => setOpenSheet({ title: legal.name, contentPath: legal.contentPath })}
+                  className='flex flex-row py-1 justify-between items-center active:opacity-60 transition-opacity'
+                >
+                  <span className='text-sm text-gray-400'>{legal.name}</span>
+                  <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round' className='text-gray-600'>
+                    <path d='m9 18 6-6-6-6' />
+                  </svg>
+                </button>
+              ))}
+            </div>
+          </section>
+
           {/* 앱 정보 섹션 */}
           <section className='flex flex-col gap-3'>
             <h2 className='text-sm font-medium text-gray-400'>앱 정보</h2>
@@ -477,6 +503,15 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {openSheet && (
+        <TermsSheet
+          open={!!openSheet}
+          onClose={() => setOpenSheet(null)}
+          title={openSheet.title}
+          contentPath={openSheet.contentPath}
+        />
       )}
 
       {/* 계정 삭제 확인 모달 */}
