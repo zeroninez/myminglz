@@ -220,7 +220,9 @@
   }
 
   div {
-    white-space: pre-wrap;
+    /* 이 스타일은 div 요소에만 적용됩니다. 다른 요소에는 영향을 주지 않습니다. */
+    /* 줄바꿈과 공백을 유지하기 위해 white-space 속성을 설정합니다. */
+    /* white-space: pre-wrap;  */
   }
 
   :root {

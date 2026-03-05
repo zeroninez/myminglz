@@ -123,7 +123,7 @@ export default function SignupPage() {
       <div className='w-full flex items-center px-4 pt-4'>
         <button
           onClick={() => router.back()}
-          className='w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 active:scale-95 transition-transform duration-200'
+          className='w-10 h-10 flex items-center justify-center rounded-full border border-[#555] active:scale-95 transition-transform duration-200'
           aria-label='뒤로가기'
         >
           <svg
@@ -136,7 +136,7 @@ export default function SignupPage() {
             strokeWidth='2.5'
             strokeLinecap='round'
             strokeLinejoin='round'
-            className='text-white'
+            className='text-gray-400'
           >
             <path d='m15 18-6-6 6-6' />
           </svg>
@@ -151,7 +151,7 @@ export default function SignupPage() {
         </div>
 
         {/* 폼 */}
-        <form onSubmit={handleSignUp} className='flex flex-col gap-4'>
+        <form onSubmit={handleSignUp} className='flex flex-col gap-8'>
           <div className='flex flex-col gap-2'>
             <label htmlFor='email' className='text-sm text-gray-400'>
               이메일

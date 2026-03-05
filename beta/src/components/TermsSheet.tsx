@@ -27,7 +27,16 @@ export const TermsSheet = ({ open, onClose, title, contentPath }: TermsSheetProp
 
   return (
     <Sheet isOpen={open} onClose={onClose} detent='full-height'>
-      <Sheet.Container style={{ backgroundColor: '#1a1a1a' }}>
+      <Sheet.Backdrop onTap={onClose} />
+      <Sheet.Container
+        style={{
+          backgroundColor: '#242424',
+          borderTopLeftRadius: '24px',
+          borderTopRightRadius: '24px',
+          border: '1px solid #555',
+          borderBottom: 'none',
+        }}
+      >
         <Sheet.Header />
         <Sheet.Content disableDrag>
           {/* <div className='w-full flex flex-row justify-between items-center px-6 pt-2 pb-3'>
@@ -47,14 +56,14 @@ export const TermsSheet = ({ open, onClose, title, contentPath }: TermsSheetProp
             ) : (
               <ReactMarkdown
                 components={{
-                  h1: ({ children }) => <h1 className='text-xl font-bold text-white mb-4 mt-2'>{children}</h1>,
+                  h1: ({ children }) => <h1 className='text-xl font-semibold text-white mb-4 mt-2'>{children}</h1>,
                   h2: ({ children }) => <h2 className='text-base font-semibold text-white mb-2 mt-5'>{children}</h2>,
                   h3: ({ children }) => <h3 className='text-sm font-semibold text-gray-200 mb-1 mt-4'>{children}</h3>,
-                  p: ({ children }) => <p className='text-sm text-gray-400 leading-relaxed mb-3'>{children}</p>,
+                  p: ({ children }) => <p className='text-sm text-gray-400 leading-relaxed mb-1'>{children}</p>,
                   ul: ({ children }) => <ul className='list-disc list-inside mb-3 space-y-1'>{children}</ul>,
                   ol: ({ children }) => <ol className='list-decimal list-inside mb-3 space-y-1'>{children}</ol>,
                   li: ({ children }) => <li className='text-sm text-gray-400 leading-relaxed'>{children}</li>,
-                  strong: ({ children }) => <strong className='text-gray-200 font-semibold'>{children}</strong>,
+                  strong: ({ children }) => <strong className='text-gray-200'>{children}</strong>,
                   table: ({ children }) => <table className='w-full mb-3 border-collapse text-sm'>{children}</table>,
                   th: ({ children }) => (
                     <th className='text-left text-gray-300 font-semibold py-1 pr-4 border-b border-gray-700'>
