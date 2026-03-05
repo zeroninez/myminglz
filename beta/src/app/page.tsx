@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Screen } from '@/components'
 import { useAuthStore } from '@/stores/authStore'
+import Link from 'next/link'
 
 export default function Page() {
   const router = useRouter()
@@ -65,18 +66,18 @@ export default function Page() {
 
       {/* 버튼 영역 */}
       <div className='w-full max-w-sm flex flex-col gap-3 px-6 pb-12'>
-        <button
-          onClick={() => router.push('/auth/signup')}
+        <Link
+          href='/auth/signup'
           className='w-full h-14 bg-primary rounded-full flex justify-center items-center active:scale-95 transition-transform duration-200'
         >
           <span className='text-lg font-semibold text-black'>회원가입</span>
-        </button>
-        <button
-          onClick={() => router.push('/auth/login')}
+        </Link>
+        <Link
+          href='/auth/login'
           className='w-full h-14 bg-gray-800 rounded-full flex justify-center items-center active:scale-95 transition-transform duration-200'
         >
           <span className='text-lg font-semibold text-gray-200'>로그인</span>
-        </button>
+        </Link>
       </div>
       <div className='w-full h-fit pb-6 text-center text-sm font-normal leading-[1.2] opacity-40'>© ZERONINEZ</div>
     </Screen>

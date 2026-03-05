@@ -2,7 +2,7 @@
 
 import { Icon } from '@/components'
 import classNames from 'classnames'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export const PostShelves = () => {
   return (
@@ -16,15 +16,9 @@ export const PostShelves = () => {
 }
 
 const Card = ({ icon, title, path }: { icon: string; title: string; path: string }) => {
-  const router = useRouter()
-
-  const handleClick = () => {
-    router.push(`/mypage/${path}`)
-  }
-
   return (
-    <section
-      onClick={handleClick}
+    <Link
+      href={`/mypage/${path}`}
       className={classNames(
         'w-full h-auto flex flex-col justify-between items-start aspect-square rounded-2xl bg-card p-4',
         'active:scale-95 transition-all duration-200 ease-in-out',
@@ -42,6 +36,6 @@ const Card = ({ icon, title, path }: { icon: string; title: string; path: string
         </div>
       </div>
       <span className='text-sm font-normal opacity-80'>times</span>
-    </section>
+    </Link>
   )
 }

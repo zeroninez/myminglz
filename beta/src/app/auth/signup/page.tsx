@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Screen, TermsSheet } from '@/components'
+import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import toast from 'react-hot-toast'
 
@@ -299,9 +300,9 @@ export default function SignupPage() {
         {/* 로그인 링크 */}
         <div className='flex justify-center items-center gap-2'>
           <span className='text-sm text-gray-500'>이미 계정이 있으신가요?</span>
-          <button onClick={() => router.push('/auth/login')} className='text-sm text-primary font-medium'>
+          <Link href='/auth/login' className='text-sm text-primary font-medium'>
             로그인
-          </button>
+          </Link>
         </div>
       </div>
 

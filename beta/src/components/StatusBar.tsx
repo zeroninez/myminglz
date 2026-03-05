@@ -1,11 +1,8 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { Icon } from '@/components'
+import Link from 'next/link'
 
 export const StatusBar = ({ credit }: { credit: number }) => {
-  const router = useRouter()
-
   return (
     <div className='w-full h-fit flex flex-row justify-between items-end px-2 py-2'>
       <div className='w-fit h-fit flex flex-row justify-center items-center gap-2'>
@@ -15,9 +12,9 @@ export const StatusBar = ({ credit }: { credit: number }) => {
         <span className='text-sm font-normal leading-none'>{credit.toLocaleString()}</span>
       </div>
       <div className='flex flex-row gap-3 items-center'>
-        <button onClick={() => router.push('/mypage/settings')} className='active:scale-95 transition-transform'>
+        <Link href='/mypage/settings' className='active:scale-95 transition-transform'>
           설정
-        </button>
+        </Link>
       </div>
     </div>
   )

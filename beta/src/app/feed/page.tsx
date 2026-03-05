@@ -1,18 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Screen } from '@/components'
 import { Icon } from '@/components'
 import { NavBarHeight } from '@/constants/sizeguide'
 import { useProfiles } from '@/hooks/useProfiles'
 import { Profile } from '@/types'
 import classNames from 'classnames'
+import Link from 'next/link'
 
-function ProfileGridCard({ profile, onClick }: { profile: Profile; onClick: () => void }) {
+function ProfileGridCard({ profile }: { profile: Profile }) {
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href={`/profile/${profile.id}`}
       className={classNames(
         'w-full flex flex-col items-center gap-2 p-3',
         'bg-card rounded-2xl active:scale-95 transition-transform duration-150',
@@ -30,12 +30,11 @@ function ProfileGridCard({ profile, onClick }: { profile: Profile; onClick: () =
         <span className='text-sm font-semibold text-white truncate w-full text-center'>{profile.display_name}</span>
         <span className='text-xs text-gray-400 truncate w-full text-center'>@{profile.username}</span>
       </div>
-    </button>
+    </Link>
   )
 }
 
 export default function ExplorePage() {
-  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const { profiles, isLoading } = useProfiles(searchQuery)
 
@@ -92,7 +91,6 @@ export default function ExplorePage() {
                 <ProfileGridCard
                   key={profile.id}
                   profile={profile}
-                  onClick={() => router.push(`/profile/${profile.id}`)}
                 />
               ))}
             </div>

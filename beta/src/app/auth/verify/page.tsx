@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Screen } from '@/components'
+import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -196,12 +197,9 @@ function VerifyEmailContent() {
         {/* 도움말 */}
         <div className='flex flex-col items-center gap-1'>
           <p className='text-xs text-gray-500 text-center'>이메일이 오지 않았다면 스팸함을 확인해주세요</p>
-          <button
-            onClick={() => router.push('/')}
-            className='text-xs text-gray-600 underline underline-offset-2 mt-1'
-          >
+          <Link href='/' className='text-xs text-gray-600 underline underline-offset-2 mt-1'>
             처음으로 돌아가기
-          </button>
+          </Link>
         </div>
       </div>
 

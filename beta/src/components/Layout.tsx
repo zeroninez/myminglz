@@ -1,25 +1,17 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { NavBar } from './NavBar'
-import { motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/stores/authStore'
 
 export const Layout = ({ children }) => {
-  const ref = useRef(null)
   const pathname = usePathname()
   const { user } = useAuthStore()
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        ref={ref}
+      <div
         style={{
           position: 'relative',
           width: '100%',
@@ -31,7 +23,7 @@ export const Layout = ({ children }) => {
         {children}
         <Toaster />
         {user && pathname !== '/' && !pathname.includes('/auth') && <NavBar />}
-      </motion.div>
+      </div>
     </>
   )
 }

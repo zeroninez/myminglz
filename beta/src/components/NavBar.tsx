@@ -1,12 +1,11 @@
 'use client'
-import { useState } from 'react'
 import classNames from 'classnames'
 import { Icon } from './Icon'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { NavBarHeight } from '@/constants/sizeguide'
 
 export const NavBar = () => {
-  const router = useRouter()
   const pathname = usePathname()
   const navItems = [
     { label: '맵', icon: 'map', link: '/map' },
@@ -14,12 +13,6 @@ export const NavBar = () => {
     { label: '발행', icon: 'add', link: '/post' },
     { label: '마이', icon: 'profile', link: '/mypage' },
   ]
-  const [current, setCurrent] = useState(null)
-
-  const handleNavClick = (label: string, link: string) => {
-    setCurrent(label)
-    router.push(link)
-  }
 
   return (
     <div
@@ -31,21 +24,21 @@ export const NavBar = () => {
       )}
     >
       {navItems.map((item) => (
-        <div
+        <Link
           key={item.label}
+          href={item.link}
           className={classNames(
             // NavBar item
             'flex flex-col justify-center items-center',
-            current === item.label || pathname === item.link ? 'text-white' : 'text-dim-text',
+            pathname === item.link ? 'text-white' : 'text-dim-text',
             'flex-1 pt-4 pb-4',
           )}
-          onClick={() => handleNavClick(item.label, item.link)}
         >
           <div className='flex flex-col justify-center items-center gap-1'>
             <Icon icon={item.icon} size={24} />
             <span className='text-xs'>{item.label}</span>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )
