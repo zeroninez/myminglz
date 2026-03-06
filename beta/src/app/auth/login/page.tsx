@@ -135,6 +135,17 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* 아이디/비밀번호 찾기 */}
+        <div className='flex justify-center items-center gap-3'>
+          <Link href='/auth/find-email' className='text-sm text-gray-400'>
+            아이디 찾기
+          </Link>
+          <span className='text-gray-600'>|</span>
+          <Link href='/auth/find-password' className='text-sm text-gray-400'>
+            비밀번호 찾기
+          </Link>
+        </div>
+
         {/* 회원가입 링크 */}
         <div className='flex justify-center items-center gap-2'>
           <span className='text-sm text-gray-500'>아직 계정이 없으신가요?</span>
