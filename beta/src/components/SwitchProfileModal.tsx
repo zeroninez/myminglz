@@ -34,7 +34,7 @@ export const SwitchProfileModal = ({
   }
 
   return (
-    <Sheet isOpen={open} onClose={onClose} detent='content-height'>
+    <Sheet isOpen={open} onClose={onClose} detent='content'>
       <Sheet.Container style={{ backgroundColor: '#1a1a1a' }}>
         <Sheet.Header />
         <Sheet.Content disableDrag>

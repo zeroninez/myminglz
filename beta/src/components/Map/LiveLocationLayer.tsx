@@ -122,7 +122,7 @@ export default function LiveLocationLayer() {
           className={classNames(
             'p-2 w-10 h-10 rounded-xl flex items-center justify-center',
             fbtn_classNames,
-            tracking === 'follow' ? ' text-white' : 'text-white/50',
+            tracking === 'follow' ? ' text-white !bg-blue-400' : 'text-white/50',
           )}
         >
           <Icon icon='location' className={`${tracking === 'follow' && ''}`} size={20} />

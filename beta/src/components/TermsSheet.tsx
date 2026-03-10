@@ -26,7 +26,7 @@ export const TermsSheet = ({ open, onClose, title, contentPath }: TermsSheetProp
   }, [open, contentPath])
 
   return (
-    <Sheet isOpen={open} onClose={onClose} detent='full-height'>
+    <Sheet isOpen={open} onClose={onClose} detent='full'>
       <Sheet.Backdrop onTap={onClose} />
       <Sheet.Container
         style={{

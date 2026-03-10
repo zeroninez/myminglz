@@ -5,6 +5,7 @@ import { GoogleMap, Marker } from '@react-google-maps/api'
 import { useGoogleMaps } from '@/app/providers/GoogleMapsProvider'
 import { PostLocation } from '@/types/post'
 import { mapStyle } from '@/components/Map/styles'
+import { reverseGeocode } from '../../utils/reverseGeocode'
 
 const SEOUL_DEFAULT = { lat: 37.5665, lng: 126.978 }
 const MAP_HEIGHT = 320
@@ -174,13 +175,3 @@ export function StepLocation({ location, onChange }: StepLocationProps) {
   )
 }
 
-/** 좌표 → 주소 텍스트 변환 (Geocoding API) */
-async function reverseGeocode(lat: number, lng: number): Promise<string> {
-  try {
-    const geocoder = new google.maps.Geocoder()
-    const result = await geocoder.geocode({ location: { lat, lng } })
-    return result.results[0]?.formatted_address ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`
-  } catch {
-    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
-  }
-}
