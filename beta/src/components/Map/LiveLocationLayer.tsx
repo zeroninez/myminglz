@@ -5,6 +5,9 @@ import { CircleF, MarkerF, useGoogleMap } from '@react-google-maps/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { NavBarHeight } from '@/constants/sizeguide'
 import { AnimatePresence, motion } from 'motion/react'
+import { Icon } from '../Icon'
+import classNames from 'classnames'
+import { fbtn_classNames } from '@/theme'
 
 type Tracking = false | 'observe' | 'follow'
 
@@ -102,7 +105,7 @@ export default function LiveLocationLayer() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.2 }}
         style={{
-          bottom: `${16}px`,
+          bottom: `${NavBarHeight + 12}px`, // NavBar 위에 위치
         }}
         className='absolute right-3 z-[1]'
       >
@@ -116,11 +119,13 @@ export default function LiveLocationLayer() {
               map.panTo({ lat: loc.lat, lng: loc.lng })
             }
           }}
-          className={`rounded-md px-3 py-2 text-sm shadow transition-colors ${
-            tracking === 'follow' ? 'bg-blue-500 text-white' : 'bg-black text-white'
-          }`}
+          className={classNames(
+            'p-2 w-10 h-10 rounded-xl flex items-center justify-center',
+            fbtn_classNames,
+            tracking === 'follow' ? ' text-white' : 'text-white/50',
+          )}
         >
-          {tracking === 'follow' ? '따라가는 중' : '현재 위치로'}
+          <Icon icon='location' className={`${tracking === 'follow' && ''}`} size={20} />
         </button>
       </motion.div>
     </>

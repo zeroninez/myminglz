@@ -19,6 +19,7 @@ import left from '@/svgs/icons/left.svg'
 import right from '@/svgs/icons/right.svg'
 import search from '@/svgs/icons/search.svg'
 import edit from '@/svgs/icons/edit.svg'
+import location from '@/svgs/icons/locaton.svg'
 
 export const icons = {
   map,
@@ -38,6 +39,7 @@ export const icons = {
   right,
   search,
   edit,
+  location,
 }
 
 interface IconProps {

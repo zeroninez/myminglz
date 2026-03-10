@@ -49,7 +49,7 @@ export default function Page() {
   ]
 
   return (
-    <Screen nav className={classNames(`px-2 pt-2 space-y-1`, ``)}>
+    <Screen nav className={classNames(`px-3 pt-3 space-y-3`, ``)}>
       <StatusBar credit={0} />
       <ProfileCard
         mode='mypage'

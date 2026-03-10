@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export const PostShelves = () => {
   return (
-    <div className='w-full h-fit grid grid-cols-2 grid-rows-2 gap-1'>
+    <div className='w-full h-fit grid grid-cols-2 grid-rows-2 gap-3'>
       <Card title='my posts' path='my-posts' icon='category' />
       <Card title='archive' path='archive' icon='folder' />
       <Card title='activity' path='activity' icon='user' />
