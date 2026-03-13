@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
   const isProfileSelectRoute = pathname.startsWith(profileSelectRoute)
 
   // 보호된 라우트 (로그인 + 이메일 확인 + 프로필 필요)
-  const protectedRoutes = ['/map', '/feed', '/post', '/mypage', '/profile']
+  const protectedRoutes = ['/feed', '/post', '/mypage', '/profile']
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   // 1. 비로그인 사용자

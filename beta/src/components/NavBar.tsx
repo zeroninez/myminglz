@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { NavBarHeight } from '@/constants/sizeguide'
 import { fbtn_classNames } from '@/theme'
+import { useAuthStore } from '@/stores/authStore'
 
 const NAV_ITEMS_LEFT = [
   { label: '맵', icon: 'map', link: '/map' },
@@ -18,7 +19,9 @@ export const NavBar = () => {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user } = useAuthStore()
 
+  const isGuest = !user
   const isPostOpen = searchParams.get('post') !== null
 
   const handlePostOpen = () => {
@@ -45,54 +48,88 @@ export const NavBar = () => {
           'w-full h-fit',
         )}
       >
-        {NAV_ITEMS_LEFT.map((item) => (
-          <Link
-            key={item.label}
-            href={item.link}
-            className={classNames(
-              'flex flex-col justify-center items-center',
-              pathname === item.link && !isPostOpen ? 'text-white' : 'text-white/50',
-              'flex-1 px-3 py-2.5',
-            )}
-          >
-            <div className='flex flex-col justify-center items-center gap-1'>
-              <Icon icon={item.icon} size={24} />
-              <span className='text-xs'>{item.label}</span>
-            </div>
-          </Link>
-        ))}
+        {isGuest ? (
+          <>
+            {/* Guest 모드: 맵 아이콘 + 로그인 버튼 */}
+            <Link
+              href='/map'
+              className={classNames(
+                'flex flex-col justify-center items-center',
+                'text-white',
+                'flex-1 px-3 py-2.5',
+              )}
+            >
+              <div className='flex flex-col justify-center items-center gap-1'>
+                <Icon icon='map' size={24} />
+                <span className='text-xs'>맵</span>
+              </div>
+            </Link>
+            <Link
+              href='/auth/login'
+              className={classNames(
+                'flex flex-col justify-center items-center',
+                'text-white/50',
+                'flex-1 px-3 py-2.5',
+              )}
+            >
+              <div className='flex flex-col justify-center items-center gap-1'>
+                <Icon icon='profile' size={24} />
+                <span className='text-xs'>로그인</span>
+              </div>
+            </Link>
+          </>
+        ) : (
+          <>
+            {NAV_ITEMS_LEFT.map((item) => (
+              <Link
+                key={item.label}
+                href={item.link}
+                className={classNames(
+                  'flex flex-col justify-center items-center',
+                  pathname === item.link && !isPostOpen ? 'text-white' : 'text-white/50',
+                  'flex-1 px-3 py-2.5',
+                )}
+              >
+                <div className='flex flex-col justify-center items-center gap-1'>
+                  <Icon icon={item.icon} size={24} />
+                  <span className='text-xs'>{item.label}</span>
+                </div>
+              </Link>
+            ))}
 
-        {/* 발행 버튼 — URL 쿼리로 PostCreateSheet 오픈 */}
-        <button
-          onClick={handlePostOpen}
-          className={classNames(
-            'flex flex-col justify-center items-center',
-            isPostOpen ? 'text-white' : 'text-white/50',
-            'flex-1 px-3 py-2.5',
-          )}
-        >
-          <div className='flex flex-col justify-center items-center gap-1'>
-            <Icon icon='add' size={24} />
-            <span className='text-xs'>발행</span>
-          </div>
-        </button>
+            {/* 발행 버튼 — URL 쿼리로 PostCreateSheet 오픈 */}
+            <button
+              onClick={handlePostOpen}
+              className={classNames(
+                'flex flex-col justify-center items-center',
+                isPostOpen ? 'text-white' : 'text-white/50',
+                'flex-1 px-3 py-2.5',
+              )}
+            >
+              <div className='flex flex-col justify-center items-center gap-1'>
+                <Icon icon='add' size={24} />
+                <span className='text-xs'>발행</span>
+              </div>
+            </button>
 
-        {NAV_ITEMS_RIGHT.map((item) => (
-          <Link
-            key={item.label}
-            href={item.link}
-            className={classNames(
-              'flex flex-col justify-center items-center',
-              pathname === item.link && !isPostOpen ? 'text-white' : 'text-white/50',
-              'flex-1 px-3 py-2.5',
-            )}
-          >
-            <div className='flex flex-col justify-center items-center gap-1'>
-              <Icon icon={item.icon} size={24} />
-              <span className='text-xs'>{item.label}</span>
-            </div>
-          </Link>
-        ))}
+            {NAV_ITEMS_RIGHT.map((item) => (
+              <Link
+                key={item.label}
+                href={item.link}
+                className={classNames(
+                  'flex flex-col justify-center items-center',
+                  pathname === item.link && !isPostOpen ? 'text-white' : 'text-white/50',
+                  'flex-1 px-3 py-2.5',
+                )}
+              >
+                <div className='flex flex-col justify-center items-center gap-1'>
+                  <Icon icon={item.icon} size={24} />
+                  <span className='text-xs'>{item.label}</span>
+                </div>
+              </Link>
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

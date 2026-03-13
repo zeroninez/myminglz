@@ -6,9 +6,12 @@ import 'swiper/css'
 import { useProfileStore } from '@/stores/profileStore'
 import { Icon } from '@/components/Icon'
 import { usePostDetail } from '../../hooks/usePostDetail'
+import { useAuthStore } from '@/stores/authStore'
+import toast from 'react-hot-toast'
 
 export function PostDetailSheet() {
   const { profile } = useProfileStore()
+  const { user } = useAuthStore()
   const {
     isOpen,
     post,
@@ -23,6 +26,14 @@ export function PostDetailSheet() {
     toggleLike,
     submitComment,
   } = usePostDetail()
+
+  const handleToggleLike = () => {
+    if (!user) {
+      toast('로그인 후 이용해주세요', { icon: '🔒' })
+      return
+    }
+    toggleLike()
+  }
 
   return (
     <Sheet isOpen={isOpen} onClose={closeSheet} detent="full" tweenConfig={{ ease: 'easeOut', duration: 0.2 }}>
@@ -97,7 +108,7 @@ export function PostDetailSheet() {
                   {/* 좋아요 + 날짜 */}
                   <div className="flex items-center gap-4">
                     <button
-                      onClick={toggleLike}
+                      onClick={handleToggleLike}
                       className="flex items-center gap-1.5 active:scale-90 transition-transform"
                     >
                       <span className="text-xl">{isLiked ? '❤️' : '🤍'}</span>

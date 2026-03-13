@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useProfileStore } from '@/stores/profileStore'
 
@@ -28,6 +28,7 @@ export interface PostDetail {
 export function usePostDetail() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   const { profile } = useProfileStore()
 
   const viewParam = searchParams.get('view')
@@ -41,8 +42,11 @@ export function usePostDetail() {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false)
 
   const closeSheet = useCallback(() => {
-    router.back()
-  }, [router])
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('view')
+    const query = params.toString()
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
+  }, [router, pathname, searchParams])
 
   const fetchPost = useCallback(
     async (postId: string) => {

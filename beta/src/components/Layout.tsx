@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { NavBar } from './NavBar'
 import { PostCreateSheet } from './PostCreate/PostCreateSheet'
@@ -11,7 +12,8 @@ export const Layout = ({ children }) => {
   const pathname = usePathname()
   const { user } = useAuthStore()
 
-  const showNav = user && pathname !== '/' && !pathname.includes('/auth')
+  const isMapPage = pathname === '/map'
+  const showNav = (user || isMapPage) && pathname !== '/' && !pathname.includes('/auth')
 
   return (
     <>
@@ -25,9 +27,9 @@ export const Layout = ({ children }) => {
         className='shadow-lg outline outline-black/10 outline-1 bg-[#121212] flex flex-col'
       >
         {children}
-        {showNav && <NavBar />}
-        {showNav && <PostCreateSheet />}
-        {showNav && <PostDetailSheet />}
+        {showNav && <Suspense><NavBar /></Suspense>}
+        {user && showNav && <PostCreateSheet />}
+        {showNav && <Suspense><PostDetailSheet /></Suspense>}
       </div>
       <Toaster containerStyle={{ zIndex: 2147483647 }} />
     </>
